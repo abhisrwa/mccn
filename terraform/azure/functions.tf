@@ -99,7 +99,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     #COSMOSDB_CUSTREVIEW   = azurerm_cosmosdb_sql_container.cust_review.name
     DB_SUMMCONTAINERID    = azurerm_cosmosdb_sql_container.sent_analysis.name
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
-    AZQUEUE_URL                    = azurerm_storage_queue.notification.url
+    AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
         
   }
@@ -137,7 +137,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
     FROM_EMAIL                     = var.from_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
-    AZQUEUE_URL                    = azurerm_storage_queue.notification.url
+    AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
   }
 
