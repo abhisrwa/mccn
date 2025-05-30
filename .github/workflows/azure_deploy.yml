@@ -1,0 +1,79 @@
+# .github/workflows/azure_deploy.yml
+
+name: Deploy to Azure Functions
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+
+env:
+  AZURE_REGION: canadacentral # Default Azure region, can be overridden by Terraform variable
+
+permissions:
+  id-token: write    # Required for OIDC
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          # Recommended: Use OpenID Connect (OIDC) for enhanced security
+          client-id: ${{ secrets.AZURE_CLIENT_ID }} # Azure AD App Registration Client ID
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }} # Azure AD Tenant ID
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} # Azure Subscription ID
+          # Use federated credentials (recommended for OIDC)
+          enable-AzPSSession: true # Required for some Azure CLI/PowerShell commands if needed
+          # OR (less secure): Use service principal with password/certificate
+          # creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON string of service principal credentials
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.x.x # Specify a suitable Terraform version
+  
+      # setup code bucket and tf state
+      #- name: Terraform Init
+      #  run: terraform init
+      #  working-directory: ./bootstrap/azure
+      
+      #- name: Terraform Apply
+      #  run: terraform apply -auto-approve -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"  -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" #-var="az_resource_group=${{ secrets.AZURE_RESOURCE_GROUP }}"
+      #  working-directory: ./bootstrap/azure
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or your preferred Node.js version 18 is EoS
+     
+      - name: Terraform Init
+        run: |
+          terraform init \
+          -backend-config="resource_group_name=mccntfrg" \
+          -backend-config="storage_account_name=mccntfstatebucket" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=azure/terraform.tfstate"
+        working-directory: ./terraform/azure # Run terraform commands from the terraform directory
+
+     # - name: Terraform Plan
+     #   run: terraform plan -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+     #   working-directory: ./terraform/azure
+        # Output plan to a file for review (optional)
+        # -out="plan.tfplan"
+      - name: Terraform Plan
+        run: terraform plan -refresh=true -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}" -var="azure_sendgrid_secret_val=${{ secrets.SGKEY }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"  -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
+        working-directory: ./terraform/azure
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}"  -var="azure_sendgrid_secret_val=${{ secrets.SGKEY }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"  -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" #-var="az_resource_group=${{ secrets.AZURE_RESOURCE_GROUP }}"
+        working-directory: ./terraform/azure
+        # If using plan file:
+        # terraform apply -auto-approve "plan.tfplan"
+    
+    
