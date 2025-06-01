@@ -14,14 +14,7 @@ resource "aws_dynamodb_table" "customerReviews" {
     name = "SK"
     type = "S"
   }
-  attribute {
-    name = "id"
-    type = "S"
-  }
-  attribute {
-    name = "content"
-    type = "S"
-  }
+
 }
 
 resource "aws_dynamodb_table" "reviewSummary" {
@@ -37,14 +30,7 @@ resource "aws_dynamodb_table" "reviewSummary" {
     name = "SK"
     type = "S"
   }
-  attribute {
-    name = "id"
-    type = "S"
-  }
-  attribute {
-    name = "summary"
-    type = "S"
-  }
+
 }
 
 

@@ -67,9 +67,3 @@ variable "review_table" {
 variable "summary_table" {
   default = "reviewSummary"
 }
-
-output "sqs_queue_url" {
-  description = "The URL of the AWS SQS queue."
-  # Reference the 'url' attribute of the 'aws_sqs_queue.notification' resource.
-  value       = aws_sqs_queue.notification.url
-}
