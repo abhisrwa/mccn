@@ -15,6 +15,12 @@ variable "from_email_address" {
   type        = string
 }
 
+variable "to_email_address" {
+  description = "The target email address in SendGrid."
+  type        = string
+  sensitive   = true
+}
+
 variable "azure_sendgrid_secret_name" {
   description = "Name of the secret in Azure Key Vault for the SendGrid API key"
   type        = string

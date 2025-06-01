@@ -20,6 +20,7 @@ jobs:
     env:
       TF_VAR_from_email_address: ${{ secrets.FROM_EMAIL_ADDRESS }}
       TF_VAR_aws_sendgrid_secret_val: ${{ secrets.SGKEY }}
+      TF_VAR_to_email_address : ${{ secrets.TO_EMAIL_ID }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

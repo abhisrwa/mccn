@@ -135,6 +135,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
     WEBSITE_NODE_DEFAULT_VERSION   = "22"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     FROM_EMAIL                     = var.from_email_address
+    TO_EMAIL                       = var.to_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = azurerm_storage_queue.notification.url

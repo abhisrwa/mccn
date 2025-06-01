@@ -78,9 +78,10 @@ resource "aws_lambda_function" "sendEmailNotification" {
       # The Lambda code will use the AWS SDK to retrieve the secret value using this ARN
       SENDGRID_API_KEY_SECRET_ARN = aws_secretsmanager_secret.sendgrid_api_key_secret.arn
       FROM_EMAIL                  = var.from_email_address # Sender email from Terraform variable
-      TO_EMAIL                    = "testEmail"
-      SQSURL          = aws_sqs_queue.notification.url
-      PLATFORM        = "aws"
+      TO_EMAIL                    = var.to_email_address
+      SQSURL                      = aws_sqs_queue.notification.url
+      PLATFORM                    = "aws"
+      SENDGRID_SECRET_NAME  = aws_secretsmanager_secret.sendgrid_api_key_secret.name
     }
 }
   depends_on = [

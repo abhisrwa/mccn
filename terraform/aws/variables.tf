@@ -16,6 +16,12 @@ variable "from_email_address" {
   sensitive   = true
 }
 
+variable "to_email_address" {
+  description = "The target email address in SendGrid."
+  type        = string
+  sensitive   = true
+}
+
 variable "aws_lambda_function_name_analysis" {
   description = "The name for the AWS Lambda function."
   type        = string
