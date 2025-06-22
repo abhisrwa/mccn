@@ -7,7 +7,7 @@ exports.analyzeSentiment = analyzeSentiment;
 exports.summarize = summarize;
 const config_1 = __importDefault(require("../config/config")); // Assuming config.ts exports an object
 const OPENROUTER_API_KEY = config_1.default.openrouterApiKey;
-const OPENROUTER_API_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_API_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';// Try openrouter API
 async function analyzeSentiment(reviews) {
     const sentimentResults = [];
     for (const review of reviews) {
