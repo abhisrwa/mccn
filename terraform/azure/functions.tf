@@ -189,7 +189,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   }
 
   tags = {
-    Environment = "Development"
+    Environment = "Prod"
   }
 }
 # --- Azure Key Vault Secret Access Policy for the Function App's Managed Identity ---
