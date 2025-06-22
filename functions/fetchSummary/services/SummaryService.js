@@ -12,7 +12,14 @@ class SummaryService {
     async process() {
         const appId = config_1.default.appId;
         const platform = process.env.PLATFORM || 'azure';
-        const summary = await this.dbProvider.getLatestItem({ S: "APP#" + appId }, config_1.default.cosmosdb.summcontainerId);
+        let summary = '';
+        const record = await this.dbProvider.getLatestItem({ S: "APP#" + appId }, config_1.default.cosmosdb.summcontainerId);
+        if (platform === 'azure') {
+            summary = record.summary;
+        }
+        else {
+            summary = record.summary;
+        }
         return summary;
     }
 }

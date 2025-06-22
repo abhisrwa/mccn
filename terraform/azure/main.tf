@@ -6,6 +6,15 @@ provider "azurerm" {
   client_id          = var.client_id
 }
 
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "mccntfrg"
+    storage_account_name = "mccntfstatebucket"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+  }
+}
+
 data "azurerm_client_config" "current" {}
 
 

@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+const SecretsManagerProvider_1 = require("./aws/SecretsManagerProvider");
+const KeyVaultProvider_1 = require("./azure/KeyVaultProvider");
 const EmailService_1 = require("./services/EmailService");
 /**
- * A simple Lambda function that processes an API Gateway proxy event.
- * It echoes the request body and adds a greeting.
+ * A simple function that processes an SQS event or Queue trigger.
+ * It sends the notification of summary.
  *
- * @param event The API Gateway proxy event.
+ * @param queueItem The SQS event/Queue Trigger.
  * @param context The Lambda context object.
  * @returns A Promise that resolves to an API Gateway proxy result.
  */
@@ -19,18 +21,26 @@ const handler = async (queueItem, context) => {
         'Access-Control-Allow-Origin': '*', // CORS for API Gateway
     };
     try {
-        let requestBody = null;
+        let secProvider;
+        let sgapikey = '';
         // Handling request based on platform
         if (platform === 'azure') {
-            console.log('Storage queue function processed work item:', queueItem);
+            secProvider = new KeyVaultProvider_1.KeyVaultProvider();
+            sgapikey = await secProvider.getSecret('sgKey');
+            console.log('Storage queue function processed work item:', sgapikey);
         }
         else if (platform === 'aws') {
-            console.log('Storage queue function processed work item:', queueItem);
+            secProvider = new SecretsManagerProvider_1.SecretsManagerProvider();
+            const sgsecret = await secProvider.getSecret('poc/sentiment');
+            console.log('Storage queue function processed work item:', sgsecret);
+            const { sgKey } = JSON.parse(sgsecret);
+            sgapikey = sgKey;
+            console.log('Storage queue function processed work item:', sgapikey);
         }
         else {
             console.log("Platform not supported");
         }
-        const emailService = new EmailService_1.EmailService();
+        const emailService = new EmailService_1.EmailService(sgapikey);
         await emailService.send();
         console.log('Processed');
         responseBody = {

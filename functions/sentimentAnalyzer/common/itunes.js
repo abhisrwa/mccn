@@ -38,15 +38,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAppReviews = getAppReviews;
 exports.getSentimentAnalysis = getSentimentAnalysis;
+exports.getORSentimentAnalysis = getORSentimentAnalysis;
 const axios_1 = __importDefault(require("axios"));
 const sentiment_1 = __importDefault(require("sentiment"));
 const summarizer = __importStar(require("./summarize")); // Assuming summarize.ts exports functions
-const config_1 = __importDefault(require("../config/config")); // Assuming config.ts exports an object
+const openrouterclient_1 = require("./openrouterclient");
 const sentiment = new sentiment_1.default();
-async function getAppReviews() {
+async function getAppReviews(appId) {
     try {
         // You might want to define a more specific interface for the full response if you use more of it
-        const response = await axios_1.default.get(`https://itunes.apple.com/us/rss/customerreviews/id=${config_1.default.appId}/json`);
+        const response = await axios_1.default.get(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/json`);
         console.log('Received app reviews');
         const feeds = response.data.feed.entry;
         return feeds;
@@ -69,6 +70,27 @@ async function getSentimentAnalysis(feeds) {
         console.log('trying to get summaries', comment);
         // Assuming getReviewSummary exists on the summarizer object and returns a promise
         summary = await summarizer.getReviewSummary(comment);
+        console.log('summary received', summary);
+    }
+    catch (error) {
+        console.error('Error getting sentiment analysis:', error.message || error);
+        return undefined;
+    }
+    return summary;
+}
+async function getORSentimentAnalysis(feeds) {
+    let summary; // Type for summary depends on what summarizer.getReviewSummary returns
+    try {
+        let comment = '';
+        let reviews = [];
+        feeds.forEach((element) => {
+            // Ensure element.content exists and has a label property
+            if (element.content && element.content.label) {
+                comment += ". " + element.content.label;
+            }
+            reviews.push({ id: element.id.label, text: element.content.label });
+        });
+        summary = await (0, openrouterclient_1.summarize)(comment);
         console.log('summary received', summary);
     }
     catch (error) {

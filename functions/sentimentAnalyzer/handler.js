@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const DynamoDBProvider_1 = require("./aws/DynamoDBProvider");
@@ -7,6 +10,7 @@ const CosmosDBProvider_1 = require("./azure/CosmosDBProvider");
 const KeyVaultProvider_1 = require("./azure/KeyVaultProvider");
 const StorageQueueProvider_1 = require("./azure/StorageQueueProvider");
 const ReviewService_1 = require("./services/ReviewService");
+const config_1 = __importDefault(require("./config/config"));
 /**
  * A simple Lambda function that processes an API Gateway proxy event.
  * It echoes the request body and adds a greeting.
@@ -31,8 +35,7 @@ const handler = async (event, context) => {
         if (platform === 'azure') {
             let secProvider = new KeyVaultProvider_1.KeyVaultProvider();
             //const connectionString = await secProvider.getSecret('dbconnstring');
-            //console.log('Connection string:: ', connectionString);
-            dbProvider = new CosmosDBProvider_1.CosmosDBProvider();
+            dbProvider = new CosmosDBProvider_1.CosmosDBProvider(config_1.default.cosmosdb.endpoint);
             qProvider = new StorageQueueProvider_1.StorageQueueProvider();
             try {
                 requestBody = await event.json();
@@ -55,8 +58,11 @@ const handler = async (event, context) => {
         else {
             console.log("Platform not supported");
         }
+        console.log("APP ID found: ", requestBody.appId);
+        if (!requestBody.appId)
+            throw new Error("App Id not in the request");
         const reviewService = new ReviewService_1.ReviewService(dbProvider, qProvider);
-        const sentAnalysis = await reviewService.process();
+        const sentAnalysis = await reviewService.process(requestBody.appId);
         console.log('Processed');
         responseBody = {
             message: sentAnalysis,

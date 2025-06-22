@@ -7,20 +7,21 @@ exports.ReviewService = void 0;
 const utils_1 = require("../utils");
 const itunes_1 = require("../common/itunes");
 const config_1 = __importDefault(require("../config/config"));
+const crypto_1 = require("crypto");
 class ReviewService {
     constructor(dbProvider, qProvider) {
         this.dbProvider = dbProvider;
         this.qProvider = qProvider;
     }
-    async process() {
-        const reviews = await (0, itunes_1.getAppReviews)();
-        await this.saveAppReviews(config_1.default.appId, reviews, config_1.default.cosmosdb.containerId);
+    async process(appId) {
+        const reviews = await (0, itunes_1.getAppReviews)(appId);
+        await this.saveAppReviews(appId, reviews, config_1.default.cosmosdb.containerId);
         console.log('Saved reviews');
         let sentAnalysis = '';
         if (reviews) {
             sentAnalysis = await (0, itunes_1.getSentimentAnalysis)(reviews);
             console.log('summary retrieved', sentAnalysis);
-            await this.saveSummary(config_1.default.appId, sentAnalysis, config_1.default.cosmosdb.summcontainerId);
+            await this.saveSummary(appId, sentAnalysis, config_1.default.cosmosdb.summcontainerId);
             await this.qProvider.sendMessageToQueue(JSON.stringify({ message: 'Done' }));
         }
         return sentAnalysis;
@@ -78,7 +79,8 @@ class ReviewService {
         }
         else if (platform === 'azure') {
             newItem = {
-                id: config_1.default.appId,
+                id: (0, crypto_1.randomUUID)(),
+                appId,
                 summary,
                 updated: new Date().getTime()
             };

@@ -7,10 +7,9 @@ exports.CosmosDBProvider = void 0;
 const cosmos_1 = require("@azure/cosmos");
 const config_1 = __importDefault(require("../config/config"));
 class CosmosDBProvider {
-    constructor() {
+    constructor(connectionString) {
         this.cosmosConfig = config_1.default.cosmosdb;
         this.databaseId = this.cosmosConfig.databaseId;
-        const connectionString = this.cosmosConfig.endpoint;
         this.client = new cosmos_1.CosmosClient(connectionString);
     }
     /**

@@ -9,6 +9,8 @@ const config = {
     azqueue: {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
         queueurl: 'AzureWebJobsStorage'
-    }
+    },
+    vault: process.env.KEY_VAULT_URL,
+    clientID: process.env.CLIENT_ID
 };
 exports.default = config;

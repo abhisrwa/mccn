@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const DynamoDBProvider_1 = require("./aws/DynamoDBProvider");
 const CosmosDBProvider_1 = require("./azure/CosmosDBProvider");
+const KeyVaultProvider_1 = require("./azure/KeyVaultProvider");
 const SummaryService_1 = require("./services/SummaryService");
 /**
  * A simple Lambda function that processes an API Gateway proxy event.
@@ -25,7 +26,9 @@ const handler = async (event, context) => {
         let dbProvider = new DynamoDBProvider_1.DynamoDBProvider();
         // Handling request based on platform
         if (platform === 'azure') {
-            dbProvider = new CosmosDBProvider_1.CosmosDBProvider();
+            let secProvider = new KeyVaultProvider_1.KeyVaultProvider();
+            const connectionString = await secProvider.getSecret('dbconnstring');
+            dbProvider = new CosmosDBProvider_1.CosmosDBProvider(connectionString);
             try {
                 requestBody = await event.json();
             }

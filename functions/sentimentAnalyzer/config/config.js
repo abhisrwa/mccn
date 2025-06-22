@@ -4,7 +4,6 @@ const config = {
     appId: process.env.APPID || '389801252',
     cosmosdb: {
         endpoint: process.env.DB_ENDPOINT,
-        key: process.env.DB_KEY,
         databaseId: process.env.DB_ID || 'cosmicworks',
         containerId: process.env.DB_CONTAINERID || 'customerreviews',
         summcontainerId: process.env.DB_SUMMCONTAINERID || 'reviewsummary'
@@ -19,6 +18,9 @@ const config = {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
         queueurl: process.env.AZQUEUE_URL
     },
-    vault: process.env.KEY_VAULT_URL
+    vault: process.env.KEY_VAULT_URL,
+    clientID: process.env.CLIENT_ID,
+    geminiApiKey: process.env.GEMINI_KEY,
+    openrouterApiKey: process.env.OPENROUTER_API_KEY
 };
 exports.default = config;

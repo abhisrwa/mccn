@@ -7,8 +7,8 @@ exports.EmailService = void 0;
 const mail_1 = __importDefault(require("@sendgrid/mail"));
 const config_1 = __importDefault(require("../config/config"));
 class EmailService {
-    constructor() {
-        mail_1.default.setApiKey(config_1.default.sgapikey);
+    constructor(sgapikey) {
+        mail_1.default.setApiKey(sgapikey);
     }
     async send() {
         // Get email details from the event object or use defaults/environment variables
@@ -17,7 +17,7 @@ class EmailService {
         const subject = 'Email from function using SendGrid Library';
         const textBody = 'This is the plain text content.';
         const htmlBody = '<p>This is the <strong>HTML</strong> content.</p>';
-        if (!config_1.default.sgapikey || !fromEmail || !toEmail) {
+        if (!fromEmail || !toEmail) {
             console.error("Missing required information: API Key, From Email, or To Email.");
             return {
                 statusCode: 400,
