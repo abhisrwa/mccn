@@ -35,6 +35,25 @@ resource "azurerm_storage_account" "static_site" {
   }
 }
 
+resource "azurerm_storage_blob" "index_html" {
+  name                   = "index.html"
+  storage_account_name   = azurerm_storage_account.static_site.name
+  storage_container_name = "$web"
+  type                   = "Block"
+  source                 = "${path.module}/../../static-website/index.html"
+  content_type           = "text/html"
+}
+
+resource "azurerm_storage_blob" "error_html" {
+  name                   = "error.html"
+  storage_account_name   = azurerm_storage_account.static_site.name
+  storage_container_name = "$web"
+  type                   = "Block"
+  source                 = "${path.module}/../../static-website/error.html"
+  content_type           = "text/html"
+}
+
+
 resource "azurerm_storage_blob" "app_js" {
   name                   = "app.js"
   storage_account_name   = azurerm_storage_account.static_site.name

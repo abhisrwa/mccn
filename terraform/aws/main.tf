@@ -20,11 +20,19 @@ resource "aws_s3_bucket" "static_site" {
   # acl = "public-read"
 }
 
-resource "aws_s3_object" "app_js" {
+resource "aws_s3_object" "index_html" {
   bucket       = aws_s3_bucket.static_site.bucket
-  key          = "app.js"
-  source       = "${path.module}/../../static-website/app.js"
-  content_type = "application/javascript"
+  key          = "index.html"
+  source       = "${path.module}/../../static-website/index.html"
+  content_type = "text/html"
+  acl          = "public-read"
+}
+
+resource "aws_s3_object" "error_html" {
+  bucket       = aws_s3_bucket.static_site.bucket
+  key          = "error.html"
+  source       = "${path.module}/../../static-website/error.html"
+  content_type = "text/html"
   acl          = "public-read"
 }
 
