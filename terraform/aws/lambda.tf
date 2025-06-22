@@ -22,6 +22,7 @@ resource "aws_lambda_function" "sentimentAnalyzer" {
   handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.sentimentAnalyzer_role.arn
+  publish       = true
   timeout       = 30
   environment {
     variables = {
@@ -47,6 +48,7 @@ resource "aws_lambda_function" "fetchSummary" {
   handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.fetchSummary_role.arn
+  publish       = true
   timeout       = 30
   environment {
     variables = {
@@ -71,6 +73,7 @@ resource "aws_lambda_function" "sendEmailNotification" {
   handler       = "index.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.sendNotification_role.arn
+  publish       = true
   timeout       = 30
   environment {
     variables = {
