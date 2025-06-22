@@ -19,6 +19,7 @@ resource "aws_lambda_function" "sentimentAnalyzer" {
   function_name = "${var.project_prefix}-sentimentAnalyzer"
   s3_bucket     = "${var.aws_lambda_code_bucket}"
   s3_key        = "sentimentAnalyzer.zip"
+  source_code_hash = filebase64sha256("sentimentAnalyzer.zip")
   handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.sentimentAnalyzer_role.arn
