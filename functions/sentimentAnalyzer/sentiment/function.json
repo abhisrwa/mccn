@@ -16,6 +16,6 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../handler.js",
+  "scriptFile": "../index.js",
   "entryPoint": "handler"
 }
