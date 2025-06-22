@@ -48,6 +48,7 @@ resource "aws_lambda_function" "fetchSummary" {
   function_name = "${var.project_prefix}-fetchSummary"
   s3_bucket     = "${var.aws_lambda_code_bucket}"
   s3_key        = "fetchSummary.zip"
+  source_code_hash = filebase64sha256("fetchSummary.zip")
   handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.fetchSummary_role.arn
@@ -73,6 +74,7 @@ resource "aws_lambda_function" "sendEmailNotification" {
   function_name = "${var.project_prefix}-sendNotification"
   s3_bucket     = "${var.aws_lambda_code_bucket}"
   s3_key        = "sendNotification.zip"
+  source_code_hash = filebase64sha256("sendNotification.zip")
   handler       = "index.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.sendNotification_role.arn
