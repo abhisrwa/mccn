@@ -1,0 +1,26 @@
+{
+  "name": "typescript-notification",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.821.0",
+    "@azure/functions": "^4.0.0",
+    "@azure/identity": "^4.10.0",
+    "@azure/keyvault-secrets": "^4.9.0",
+    "@sendgrid/mail": "^8.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "rimraf": "^5.0.0",
+    "typescript": "^4.0.0"
+  },
+  "main": "dist/azure/index.js"
+}
