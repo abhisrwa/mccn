@@ -80,51 +80,6 @@ jobs:
         # If using plan file:
         # terraform apply -auto-approve "plan.tfplan"
 
-      - name: Get publish profile summary
-        id: get_publish_profile_summary
-        run: |
-          PROFILE_JSON=$(az functionapp deployment list-publishing-profiles \
-            --name multiccn-fetchSummary \
-            --resource-group ${secrets.AZURE_RESOURCE_GROUP} \
-            --query "[?publishMethod=='MSDeploy'].publishProfile" -o tsv)
-          echo "::set-output name=profile::$PROFILE_JSON"
-      
-      - name: Create or update publish profile secret for summary
-        uses: peter-evans/create-or-update-secret@v2
-        with:
-          secret-name: AZURE_FETCHSUMMARY_PUBLISH_PROFILE
-          secret-value: ${{ steps.get_publish_profile_summary.outputs.profile }}
-
-      - name: Get publish profile notify
-        id: get_publish_profile_notify
-        run: |
-          PROFILE_JSON=$(az functionapp deployment list-publishing-profiles \
-            --name multiccn-sendNotification \
-            --resource-group ${secrets.AZURE_RESOURCE_GROUP} \
-            --query "[?publishMethod=='MSDeploy'].publishProfile" -o tsv)
-          echo "::set-output name=profile::$PROFILE_JSON"
-
-      - name: Create or update publish profile secret for notify
-        uses: peter-evans/create-or-update-secret@v2
-        with:
-          secret-name: AZURE_SENDNOTIFICATION_PUBLISH_PROFILE
-          secret-value: ${{ steps.get_publish_profile_notify.outputs.profile }}
-
-      - name: Get publish profile for sentiment
-        id: get_publish_profile_sentiment
-        run: |
-          PROFILE_JSON=$(az functionapp deployment list-publishing-profiles \
-            --name multiccn-sentimentAnalyzer \
-            --resource-group ${secrets.AZURE_RESOURCE_GROUP} \
-            --query "[?publishMethod=='MSDeploy'].publishProfile" -o tsv)
-          echo "::set-output name=profile::$PROFILE_JSON"
-
-      - name: Create or update publish profile secret for sentiment
-        uses: peter-evans/create-or-update-secret@v2
-        with:
-          secret-name: AZURE_SENTIMENTANALYZER_PUBLISH_PROFILE
-          secret-value: ${{ steps.get_publish_profile_sentiment.outputs.profile }}
-
       - name: Run build script
         run: ./build.sh
         working-directory: ./terraform/azure
