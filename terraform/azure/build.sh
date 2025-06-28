@@ -6,6 +6,10 @@ FUNCTIONS=("sentimentAnalyzer" "fetchSummary" "sendNotification")
 # Start from terraform/azure
 echo "Running build.sh from $(pwd)"
 
+# Cleanup old zip files
+echo "Removing old zip files in $(pwd)..."
+rm -f ./*.zip
+
 for func in "${FUNCTIONS[@]}"; do
   FUNC_PATH="../../functions/$func"
   ZIP_OUTPUT_PATH="./$func.zip"

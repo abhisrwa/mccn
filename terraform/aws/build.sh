@@ -4,6 +4,10 @@ set -e
 BUCKET_NAME="mcloud-code-bucket"
 FUNCTIONS=("sentimentAnalyzer" "fetchSummary" "sendNotification")
 
+# Cleanup old zip files
+echo "Removing old zip files in $(pwd)..."
+rm -f ./*.zip
+
 for func in "${FUNCTIONS[@]}"; do
   cd ../../functions/$func ##
   npm install #--production 
