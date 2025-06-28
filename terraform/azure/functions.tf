@@ -92,7 +92,8 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     WEBSITE_NODE_DEFAULT_VERSION   = "22"
-    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    WEBSITE_RUN_FROM_PACKAGE       = "1"
+    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
@@ -133,7 +134,8 @@ resource "azurerm_windows_function_app" "sendNotification" {
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
     WEBSITE_NODE_DEFAULT_VERSION   = "22"
-    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    WEBSITE_RUN_FROM_PACKAGE       = "1"
+    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     FROM_EMAIL                     = var.from_email_address
     TO_EMAIL                       = var.to_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
@@ -172,7 +174,8 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     WEBSITE_NODE_DEFAULT_VERSION   = "22"
-    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    WEBSITE_RUN_FROM_PACKAGE       = "1"
+    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
     #QUEUE_URL
     AZQUEUE_URL     = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"

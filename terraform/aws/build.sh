@@ -10,8 +10,8 @@ for func in "${FUNCTIONS[@]}"; do
   npm run build
   cd dist
   echo "Zipping $func..." 
-  
-  zip -r ../../terraform/aws/$func.zip . -x "*.test.js"
+
+  zip -r ../../../terraform/aws/$func.zip . -x "*.test.js"
   aws s3 cp ../../terraform/aws/$func.zip s3://$BUCKET_NAME/$func.zip
   echo "Done building $func"
   cd - >/dev/null 
