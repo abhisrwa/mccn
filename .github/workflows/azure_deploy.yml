@@ -88,6 +88,10 @@ jobs:
         run: ./build.sh
         working-directory: ./terraform/azure
 
+      - name: 🔍 List contents
+        run: ls -R
+        working-directory: ./terraform/azure
+
       - name: Deploy to Azure Function App
         uses: Azure/functions-action@v1
         with:

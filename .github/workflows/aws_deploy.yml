@@ -64,6 +64,10 @@ jobs:
           ./build.sh
         working-directory: ./terraform/aws # Zip from the root of the repository
     
+      - name: 🔍 List contents
+        run: ls -R
+        working-directory: ./terraform/aws
+
       - name: Debug Terraform setup
         run: |
           pwd
