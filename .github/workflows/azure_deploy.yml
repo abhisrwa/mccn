@@ -80,6 +80,10 @@ jobs:
         # If using plan file:
         # terraform apply -auto-approve "plan.tfplan"
 
+      - name: Make build.sh executable
+        run: chmod +x ./build.sh
+        working-directory: ./terraform/azure
+
       - name: Run build script
         run: ./build.sh
         working-directory: ./terraform/azure
