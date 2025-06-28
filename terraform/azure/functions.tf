@@ -91,6 +91,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
 
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
+    FUNCTIONS_EXTENSION_VERSION     = "~4"
     WEBSITE_NODE_DEFAULT_VERSION   = "20"
     WEBSITE_RUN_FROM_PACKAGE       = "1"
     #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
@@ -133,6 +134,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
 
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
+    FUNCTIONS_EXTENSION_VERSION     = "~4"
     WEBSITE_NODE_DEFAULT_VERSION   = "20"
     WEBSITE_RUN_FROM_PACKAGE       = "1"
     #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
@@ -173,6 +175,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
 
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
+    FUNCTIONS_EXTENSION_VERSION     = "~4"
     WEBSITE_NODE_DEFAULT_VERSION   = "20"
     WEBSITE_RUN_FROM_PACKAGE       = "1"
     #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
