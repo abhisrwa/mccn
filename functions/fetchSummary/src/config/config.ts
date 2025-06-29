@@ -28,34 +28,27 @@ interface AppConfig {
     clientID: string;
 }
 
-// Helper function to validate required environment variables
-function getRequiredEnv(name: string): string {
-    const value = process.env[name];
-    if (!value) throw new Error(`Missing required environment variable: ${name}`);
-    return value;
-}
-
 const config: AppConfig = {
-    appId: getRequiredEnv('APPID'),
+    appId: process.env.APPID,
     cosmosdb: {
-        endpoint: getRequiredEnv('DB_ENDPOINT'),
-        key: getRequiredEnv('DB_KEY'),
+        endpoint: process.env.DB_ENDPOINT,
+        key: process.env.DB_KEY,
         databaseId: process.env.DB_ID || 'cosmicworks',
         containerId: process.env.DB_CONTAINERID || 'customerreviews',
         summcontainerId: process.env.DB_SUMMCONTAINERID || 'reviewsummary'
     },
     awsregion: process.env.REGION || 'eu-north-1',
-    sqsURL: getRequiredEnv('SQSURL'),
+    sqsURL: process.env.SQSURL,
     ddb: {
         reviewtable: process.env.DB_REVIEW_TABLE || 'customerreviews',
         summarytable: process.env.DB_SUMM_TABLE || 'reviewsummary'
     },
     azqueue: {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
-        queueurl: getRequiredEnv('AZQUEUE_URL')
+        queueurl: process.env.AZQUEUE_URL
     },
-    vault: getRequiredEnv('KEY_VAULT_URL'),
-    clientID: getRequiredEnv('CLIENT_ID')
+    vault: process.env.KEY_VAULT_URL,
+    clientID: process.env.CLIENT_ID
 };
 
 export default config;

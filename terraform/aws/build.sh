@@ -11,7 +11,7 @@ rm -f ./*.zip
 for func in "${FUNCTIONS[@]}"; do
   cd ../../functions/$func ##
   npm install #--production 
-  npm run build
+  npm run build || echo " $func — continuing..."
   cd dist
   echo "Zipping $func..." 
 

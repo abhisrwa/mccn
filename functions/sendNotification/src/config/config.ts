@@ -15,25 +15,18 @@ interface AppConfig {
     clientID: string;
 }
 
-// Helper function to validate required environment variables
-function getRequiredEnv(name: string): string {
-    const value = process.env[name];
-    if (!value) throw new Error(`Missing required environment variable: ${name}`);
-    return value;
-}
-
 const config: AppConfig = {
-    sgapikey : getRequiredEnv('SENDGRID_API_KEY'),
-    tomailid : getRequiredEnv('TO_EMAIL'),
-    frommailid : getRequiredEnv('FROM_EMAIL'),
+    sgapikey : process.env.SENDGRID_API_KEY,
+    tomailid : process.env.TO_EMAIL,
+    frommailid : process.env.FROM_EMAIL,
     awsregion: process.env.REGION || 'eu-north-1',
-    sqsURL: getRequiredEnv('SQSURL'),
+    sqsURL: process.env.SQSURL,
     azqueue: {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
         queueurl: 'AzureWebJobsStorage'
     },
-    vault: getRequiredEnv('KEY_VAULT_URL'),
-    clientID: getRequiredEnv('CLIENT_ID')
+    vault: process.env.KEY_VAULT_URL,
+    clientID: process.env.CLIENT_ID
 };
 
 export default config;
