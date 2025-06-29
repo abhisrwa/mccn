@@ -177,10 +177,10 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
     WEBSITE_NODE_DEFAULT_VERSION   = "20"
-    WEBSITE_RUN_FROM_PACKAGE       = "1"
-    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    #WEBSITE_RUN_FROM_PACKAGE       = "1" 
+    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
-    #QUEUE_URL
+
     AZQUEUE_URL     = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
@@ -195,7 +195,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   }
 
   tags = {
-    Environment = "Develop"
+    Environment = "Development"
   }
 }
 # --- Azure Key Vault Secret Access Policy for the Function App's Managed Identity ---
