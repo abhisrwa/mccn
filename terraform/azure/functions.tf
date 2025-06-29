@@ -81,7 +81,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     }
 
     application_stack {
-      node_version = "~20"
+      node_version = "~22"
     }
   }
 
@@ -92,9 +92,9 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "20"
-    WEBSITE_RUN_FROM_PACKAGE       = "1"
-    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    WEBSITE_NODE_DEFAULT_VERSION   = "22"
+    #WEBSITE_RUN_FROM_PACKAGE       = "1"
+    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
@@ -111,7 +111,6 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   }
   depends_on = [azurerm_storage_queue.notification]
 }
-
 resource "azurerm_windows_function_app" "sendNotification" {
   name                       = "${var.project_prefix}-sendNotification"
   location                   = azurerm_resource_group.rg.location
@@ -124,7 +123,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
     ftps_state = "Disabled"
    
     application_stack {
-      node_version = "~20"
+      node_version = "~22"
     }
   }
 
@@ -135,9 +134,9 @@ resource "azurerm_windows_function_app" "sendNotification" {
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "20"
-    WEBSITE_RUN_FROM_PACKAGE       = "1"
-    #SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    WEBSITE_NODE_DEFAULT_VERSION   = "22"
+    #WEBSITE_RUN_FROM_PACKAGE       = "1"
+    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     FROM_EMAIL                     = var.from_email_address
     TO_EMAIL                       = var.to_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
@@ -165,7 +164,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     ftps_state = "Disabled"
    
     application_stack {
-      node_version = "~20"
+      node_version = "~22"
     }
   }
 
@@ -176,7 +175,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "20"
+    WEBSITE_NODE_DEFAULT_VERSION   = "22"
     #WEBSITE_RUN_FROM_PACKAGE       = "1" 
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
@@ -209,4 +208,4 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
     "List" 
   ]
 }
-# Duplicate and modify for fetchSummary and sendEmailNotification functions
+# Duplicate and modify for fetchSummary and sendEmailNotification function
