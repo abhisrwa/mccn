@@ -102,11 +102,11 @@ jobs:
           package: ./terraform/azure/sendNotification.zip
           publish-profile: ${{ secrets.AZURE_SENDNOTIFICATION_PUBLISH_PROFILE }}
 
-      - name: Deploy Azure Function via CLI
-        run: |
-          az functionapp deployment source config-zip \
-          --resource-group multiccn-rg \
-          --name multiccn-sentimentAnalyzer \
-          --src ./terraform/azure/sentimentAnalyzer.zip
+     # - name: Deploy Azure Function via CLI
+     #   run: |
+     #     az functionapp deployment source config-zip \
+     #    --resource-group multiccn-rg \
+     #     --name multiccn-sentimentAnalyzer \
+     #     --src ./terraform/azure/sentimentAnalyzer.zip
     
     
