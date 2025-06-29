@@ -1,7 +1,7 @@
 variable "project_prefix" {
   description = "Prefix used to name Azure resources"
   type        = string
-  default     = "multiccn1"
+  default     = "multiccn"
 }
 
 variable "azure_location" {
