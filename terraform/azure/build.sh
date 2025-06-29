@@ -27,7 +27,7 @@ for func in "${FUNCTIONS[@]}"; do
 
   # Create zip file
   echo "Zipping $func into $ZIP_OUTPUT_PATH..."
-  zip -r "$ZIP_OUTPUT_PATH" dist node_modules host.json package.json .funcignore >/dev/null
+  zip -r "$ZIP_OUTPUT_PATH" dist node_modules host.json package.json .funcignore src/ >/dev/null
 
   echo "✅ Done building $func"
 
