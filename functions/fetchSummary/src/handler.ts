@@ -13,7 +13,12 @@ import { SummaryService } from "./services/SummaryService";
  * @returns A Promise that resolves to an API Gateway proxy result.
  */
 export const handler = async ( event: any, context: any ): Promise<any> => {
-  const platform = process.env.PLATFORM || 'azure';
+  //const platform = process.env.PLATFORM || 'azure';
+  const platform = process.env.PLATFORM;
+
+  if (platform !== 'aws' && platform !== 'azure') {
+  throw new Error(`Invalid or missing PLATFORM env variable: ${platform}`);
+  }
   let responseBody: any;
   let statusCode: number = 200;
   const headers = {
