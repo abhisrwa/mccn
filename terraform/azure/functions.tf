@@ -81,7 +81,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     }
 
     application_stack {
-      node_version = "~22"
+      node_version = "~20"
     }
   }
 
@@ -92,7 +92,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "22"
+    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
     #WEBSITE_RUN_FROM_PACKAGE       = "1"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
@@ -123,7 +123,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
     ftps_state = "Disabled"
    
     application_stack {
-      node_version = "~22"
+      node_version = "~20"
     }
   }
 
@@ -134,7 +134,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "22"
+    #WEBSITE_NODE_DEFAULT_VERSION   = "22"
     #WEBSITE_RUN_FROM_PACKAGE       = "1"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     FROM_EMAIL                     = var.from_email_address
@@ -164,7 +164,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     ftps_state = "Disabled"
    
     application_stack {
-      node_version = "~22"
+      node_version = "~20"
     }
   }
 
@@ -175,7 +175,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    WEBSITE_NODE_DEFAULT_VERSION   = "22"
+    #WEBSITE_NODE_DEFAULT_VERSION   = "22"
     #WEBSITE_RUN_FROM_PACKAGE       = "1" 
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
@@ -204,7 +204,7 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
   object_id    = azurerm_windows_function_app.sendNotification.identity[0].principal_id
 
   secret_permissions = [
-    "Get", # Allow the Function App to get the secret value
+    "Get", # Allow the Function App to get the secret val
     "List" 
   ]
 }

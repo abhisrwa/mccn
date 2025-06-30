@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-FUNCTIONS=("fetchSummary" "sendNotification") #"sentimentAnalyzer"
+# Include all functions
+FUNCTIONS=("fetchSummary" "sendNotification" "sentimentAnalyzer")
 
 # Start from terraform/azure
 echo "Running build.sh from $(pwd)"
@@ -23,7 +24,7 @@ for func in "${FUNCTIONS[@]}"; do
   echo "Installing dependencies..."
   npm install --silent
   echo "Building TypeScript..."
-  npm run build || echo " $func — continuing..."
+  npm run build
 
   # Create zip file
   echo "Zipping $func into $ZIP_OUTPUT_PATH..."

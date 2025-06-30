@@ -1,13 +1,43 @@
-const config: AppConfig = {
-    sgapikey : process.env.SENDGRID_API_KEY || 'SG.eU',
-    tomailid : process.env.TO_EMAIL || 'swismit',
-    frommailid : process.env.FROM_EMAIL || 'abhi1',
-    awsregion: process.env.REGION || 'eu-north-1',
-    sqsURL: process.env.SQSURL || 'https',
+interface AppConfig {
+    sgapikey: string;
+    tomailid: string;
+    frommailid: string;
+    awsregion: string;
+    sqsURL: string;
     azqueue: {
-        queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
-        queueurl: 'AzureWebJobsStorage'
+        queuename: string;
+        queueurl: string;
+    };
+    vault: string;
+    clientID: string;
+    platform: string;
+}
+
+// Enforce required env vars
+function requireEnv(name: string): string {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Missing required environment variable: ${name}`);
+    }
+    return value;
+}
+
+// Determine platform
+const platform = process.env.PLATFORM || 'aws';
+
+const config: AppConfig = {
+    platform,
+    sgapikey: requireEnv('SENDGRID_API_KEY'),
+    tomailid: requireEnv('TO_EMAIL'),
+    frommailid: requireEnv('FROM_EMAIL'),
+    awsregion: process.env.REGION || 'eu-north-1',
+    sqsURL: platform === 'aws' ? requireEnv('SQSURL') : '',
+    azqueue: {
+        queuename: platform === 'azure' ? requireEnv('AZQUEUE_NAME') : '',
+        queueurl: platform === 'azure' ? requireEnv('AZQUEUE_URL') : ''
     },
-    vault: process.env.KEY_VAULT_URL || 'https',
-    clientID: process.env.CLIENT_ID || 'cc74bc7c'
+    vault: platform === 'azure' ? requireEnv('KEY_VAULT_URL') : '',
+    clientID: platform === 'azure' ? requireEnv('CLIENT_ID') : ''
 };
+
+export default config;

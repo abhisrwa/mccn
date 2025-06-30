@@ -1,23 +1,60 @@
-const config: AppConfig = {
-    appId: process.env.APPID || '389801252',
+interface AppConfig {
+    platform: string;
+    appId: string;
     cosmosdb: {
-        endpoint: process.env.DB_ENDPOINT || 'AccountEndpoint',
+        endpoint: string;
+        databaseId: string;
+        containerId: string;
+        summContainerId: string;
+    };
+    awsregion: string;
+    sqsURL: string;
+    ddb: {
+        reviewtable: string;
+        summarytable: string;
+    };
+    azqueue: {
+        queuename: string;
+        queueurl: string;
+    };
+    vault: string;
+    clientID: string;
+    geminiApiKey: string;
+    openrouterApiKey: string;
+}
+
+function requireEnv(name: string): string {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Missing required environment variable: ${name}`);
+    }
+    return value;
+}
+
+const platform = process.env.PLATFORM || 'aws'; // or 'azure'
+
+const config: AppConfig = {
+    platform,
+    appId: process.env.APPID || '',
+    cosmosdb: {
+        endpoint: platform === 'azure' ? requireEnv('DB_ENDPOINT') : '',
         databaseId: process.env.DB_ID || 'cosmicworks',
         containerId: process.env.DB_CONTAINERID || 'customerreviews',
-        summcontainerId: process.env.DB_SUMMCONTAINERID || 'reviewsummary'
+        summContainerId: process.env.DB_SUMMCONTAINERID || 'reviewsummary',
     },
     awsregion: process.env.REGION || 'eu-north-1',
-    sqsURL: process.env.SQSURL || 'http',
+    sqsURL: platform === 'aws' ? requireEnv('SQSURL') : '',
     ddb: {
         reviewtable: process.env.DB_REVIEW_TABLE || 'customerreviews',
-        summarytable: process.env.DB_SUMM_TABLE || 'reviewsummary'
+        summarytable: process.env.DB_SUMM_TABLE || 'reviewsummary',
     },
     azqueue: {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
-        queueurl: process.env.AZQUEUE_URL || 'DefaultEndpointsProtocol'
+        queueurl: platform === 'azure' ? requireEnv('AZQUEUE_URL') : '',
     },
-    vault: process.env.KEY_VAULT_URL || 'https/',
-    clientID: process.env.CLIENT_ID || 'cc74',
-    geminiApiKey: process.env.GEMINI_KEY || 'AIz',
-    openrouterApiKey: process.env.OPENROUTER_API_KEY || 'sk'
+    vault: platform === 'azure' ? requireEnv('KEY_VAULT_URL') : '',
+    clientID: platform === 'azure' ? requireEnv('CLIENT_ID') : '',
+    geminiApiKey: process.env.GEMINI_KEY || '',
+    openrouterApiKey: process.env.OPENROUTER_API_KEY || ''
 };
+export default config;

@@ -20,7 +20,7 @@ export class ReviewService {
         if (reviews) {
             sentAnalysis = await getSentimentAnalysis(reviews);
             console.log('summary retrieved', sentAnalysis);            
-            await this.saveSummary(appId, sentAnalysis, config.cosmosdb.summcontainerId);
+            await this.saveSummary(appId, sentAnalysis, config.cosmosdb.summContainerId);
             await this.qProvider.sendMessageToQueue(JSON.stringify({ message: 'Done'}));
         }
         return sentAnalysis;
