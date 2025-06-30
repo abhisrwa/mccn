@@ -9,5 +9,5 @@ const config: AppConfig = {
         queueurl: 'AzureWebJobsStorage'
     },
     vault: process.env.KEY_VAULT_URL || 'https://sentiment.vault.azure.net/',
-    clientID: process.env.CLIENT_ID || 'cc74bc7c-f286-4919-9fda-31d37161d9ca'
+    clientID: process.env.CLIENT_ID || 'cc74bc7c'
 };

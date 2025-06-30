@@ -18,5 +18,5 @@ const config: AppConfig = {
         queueurl: process.env.AZQUEUE_URL || 'DefaultEndpointsProtocol=https;AccountName=cathstorageacc;AccountKey=s24XQd9/TVsNOj8Fa9Axdhy6yWU2UJ/ffj8kJmTZGPzyHPPlC9r6LsCuhFoqDUrXifzntDr0Y/81+AStq3kIMg==;EndpointSuffix=core.windows.net'
     },
     vault: process.env.KEY_VAULT_URL || 'https://sentiment.vault.azure.net/',
-    clientID: process.env.CLIENT_ID || 'cc74bc7c-f286-4919-9fda-31d37161d9ca'
+    clientID: process.env.CLIENT_ID || 'cc74bc7'
 };
