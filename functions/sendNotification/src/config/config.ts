@@ -1,32 +1,13 @@
-// config.ts
-interface AzureQueueConfig {
-    queuename: string;
-    queueurl: string;
-}
-
-interface AppConfig {
-    sgapikey: string;
-    tomailid: string;
-    awsregion: string;
-    sqsURL: string;
-    azqueue: AzureQueueConfig;
-    frommailid: string;
-    vault: string;
-    clientID: string;
-}
-
 const config: AppConfig = {
-    sgapikey : process.env.SENDGRID_API_KEY,
-    tomailid : process.env.TO_EMAIL,
-    frommailid : process.env.FROM_EMAIL,
+    sgapikey : process.env.SENDGRID_API_KEY || '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',
+    tomailid : process.env.TO_EMAIL || 'swismitha@yahoo.co.in',
+    frommailid : process.env.FROM_EMAIL || 'abhi1999rwa@gmail.com',
     awsregion: process.env.REGION || 'eu-north-1',
-    sqsURL: process.env.SQSURL,
+    sqsURL: process.env.SQSURL || 'https://sqs.eu-north-1.amazonaws.com/767398089028/SummaryNotnQueue.fifo',
     azqueue: {
         queuename: process.env.AZQUEUE_NAME || 'js-queue-items',
         queueurl: 'AzureWebJobsStorage'
     },
-    vault: process.env.KEY_VAULT_URL,
-    clientID: process.env.CLIENT_ID
+    vault: process.env.KEY_VAULT_URL || 'https://sentiment.vault.azure.net/',
+    clientID: process.env.CLIENT_ID || 'cc74bc7c-f286-4919-9fda-31d37161d9ca'
 };
-
-export default config;
