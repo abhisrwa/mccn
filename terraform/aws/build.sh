@@ -23,10 +23,13 @@ for func in "${FUNCTIONS[@]}"; do
   npm uninstall @azure/cosmos || true
 
   # Install only production dependencies
-  npm install --omit=dev
 
+  npm install --silent
   # Run build, allow failures to continue
-  npm run build || echo "$func build failed — continuing..."
+  npm run build
+  npm prune --omit=dev
+
+  #npm run build || echo "$func build failed — continuing..."
 
   # Package the dist folder only
   cd dist
