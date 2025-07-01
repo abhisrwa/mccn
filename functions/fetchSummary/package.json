@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "preinstall": "node ./preinstall.js",
-    "prepare": "node ./build.config.js",
-    "build": "node ./build.config.js",
-    "postinstall": "npm run build",
+    "build": "tsc",
+    //"build": "node ./build.config.js",
+    "predeploy": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

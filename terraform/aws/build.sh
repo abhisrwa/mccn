@@ -29,10 +29,10 @@ for func in "${FUNCTIONS[@]}"; do
 
   # Build using tsconfig.aws.json
   echo "Building TypeScript with tsconfig.aws.json..."
-  #npx tsc --project tsconfig.aws.json
+  npx tsc --project tsconfig.aws.json
 
   # Run build, allow failures to continue
-  npm run build || echo "$func build failed — continuing..."
+  #npm run build || echo "$func build failed — continuing..."
 
   #npm prune --omit=dev
 
