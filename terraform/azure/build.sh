@@ -32,13 +32,13 @@ for func in "${FUNCTIONS[@]}"; do
   echo "Compiling TypeScript using tsconfig.azure.json..."
   npx tsc --project tsconfig.azure.json
 
-  echo "Building TypeScript..."
+  #echo "Building TypeScript..."
     
-  npm prune --omit=dev
+  #npm prune --omit=dev
   
   # Create zip file
   echo "Zipping $func into $ZIP_OUTPUT_PATH..."
-  zip -r "$ZIP_OUTPUT_PATH" dist node_modules host.json package.json .funcignore src/ >/dev/null
+  zip -r "$ZIP_OUTPUT_PATH" dist node_modules host.json package.json package-lock.json .funcignore src/ >/dev/null
 
   echo "✅ Done building $func"
 

@@ -75,7 +75,7 @@ resource "aws_lambda_function" "sendEmailNotification" {
   s3_bucket     = "${var.aws_lambda_code_bucket}"
   s3_key        = "sendNotification.zip"
   source_code_hash = filebase64sha256("sendNotification.zip")
-  handler       = "index.handler"
+  handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.sendNotification_role.arn
   publish       = true

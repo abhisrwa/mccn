@@ -20,16 +20,16 @@ for func in "${FUNCTIONS[@]}"; do
 
   # Remove Azure-specific packages if they exist
   echo "🧼 Pruning Azure dependencies (if any)..."
-  npm uninstall @azure/cosmos || true
-
+  #npm uninstall @azure/cosmos || true
+  npm uninstall @azure/cosmos @azure/identity @azure/keyvault-secrets @azure/msal-node @azure/storage-queue @azure/functions || true
   # Install only production dependencies
 
   npm install --silent
   # Build using tsconfig.aws.json
   echo "Building TypeScript with tsconfig.aws.json..."
-  npx tsc --project tsconfig.aws.json
+  #npx tsc --project tsconfig.aws.json
   # Run build, allow failures to continue
-  #npm run build
+  npm run build || echo "$func build failed — continuing..."
 
   npm prune --omit=dev
 

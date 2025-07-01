@@ -4,14 +4,15 @@
   "description": "Sample Node.js TypeScript Lambda",
   "main": "dist/azure/index.js",
   "scripts": {
-    "build": "tsc",
-    "predeploy": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "preinstall": "node ./preinstall.js",
+  "build": "node ./build.config.js",
+  "predeploy": "npm run build",
+  "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "node16",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
     "@types/axios": "^0.9.36",

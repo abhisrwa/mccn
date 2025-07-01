@@ -53,7 +53,7 @@ jobs:
       - name: Remove zip
         run: rm -f ./*.zip
         working-directory: ./terraform/azure
-        
+
       - name: 'Checkout Function App Source Code'
         uses: actions/checkout@v4 # Check out your repository where your function code lives
 
@@ -85,12 +85,12 @@ jobs:
         working-directory: ./terraform/azure
 
       - name: Make build.sh executable
-        run: chmod +x ./build.sh
+        run: chmod +x ./sourceBuild.sh
         working-directory: ./terraform/azure
 
       - name: Run build script
-        run: ./build.sh
-        working-directory: ./terraform/azure
+        run: ./sourceBuild.sh
+        working-directory: ./terraform/azure    
 
       - name: Deploy sentimentAnalyzer function
         uses: Azure/functions-action@v1
