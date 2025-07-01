@@ -30,7 +30,7 @@ for func in "${FUNCTIONS[@]}"; do
   # Change into the function directory and zip
   (
     cd "$FUNC_SRC"
-    zip -r "$ZIP_NAME" . -x "node_modules/*" "dist/*" > /dev/null
+    zip -r "$ZIP_NAME" . -x "node_modules/*" "dist/*" "tsconfig.aws.json" > /dev/null
   )
 
   # Move the zip to terraform/azure

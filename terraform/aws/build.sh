@@ -36,11 +36,12 @@ for func in "${FUNCTIONS[@]}"; do
   #npm run build || echo "$func build failed — continuing..."
 
   # Package the dist folder only
-  #cd dist
-  ZIP_PATH=../../terraform/aws/$func.zip
+  cd dist
+  ZIP_PATH=../../../terraform/aws/$func.zip
   echo "📁 Zipping dist/ to $ZIP_PATH..."
-  zip -r $ZIP_PATH dist node_modules package.json package-lock.json -x "*.test.js"
-
+  zip -r $ZIP_PATH . -x "*.test.js"
+  cd ..
+  zip -g "$ZIP_PATH" -r node_modules package.json package-lock.json
   # Upload to S3
   echo "☁️ Uploading $func.zip to s3://$BUCKET_NAME/$func.zip..."
   aws s3 cp $ZIP_PATH s3://$BUCKET_NAME/$func.zip

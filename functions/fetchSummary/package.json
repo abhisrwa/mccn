@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-  "preinstall": "node ./preinstall.js",
-  "build": "node ./build.config.js",
-  "predeploy": "npm run build",
-  "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "node ./preinstall.js",
+    "prepare": "node ./build.config.js",
+    "build": "node ./build.config.js",
+    "postinstall": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.821.0",
