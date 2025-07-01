@@ -92,15 +92,15 @@ jobs:
         run: ./sourceBuild.sh
         working-directory: ./terraform/azure    
 
-      - name: Deploy sentimentAnalyzer via zipdeploy (raw source)
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: https://multiccn-sentimentanalyzer.scm.azurewebsites.net/api/zipdeploy
-          method: POST
-          username: ${{ secrets.AZURE_SENTIMENTANALYZER_PUBLISH_USERNAME }}
-          password: ${{ secrets.AZURE_SENTIMENTANALYZER_PUBLISH_PASSWORD }}
-          files: './terraform/azure/sentimentAnalyzer.zip'
-          contentType: application/zip
+     # - name: Deploy sentimentAnalyzer via zipdeploy (raw source)
+     #   uses: fjogeleit/http-request-action@v1
+     #   with:
+     #     url: https://multiccn-sentimentanalyzer.scm.azurewebsites.net/api/zipdeploy
+     #     method: POST
+     #     username: ${{ secrets.AZURE_SENTIMENTANALYZER_PUBLISH_USERNAME }}
+     #     password: ${{ secrets.AZURE_SENTIMENTANALYZER_PUBLISH_PASSWORD }}
+     #     files: './terraform/azure/sentimentAnalyzer.zip'
+     #     contentType: application/zip
       
       - name: Enable Kudu/Oryx Build
         uses: azure/CLI@v1
