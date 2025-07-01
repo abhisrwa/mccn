@@ -1,21 +1,20 @@
 // build.config.js
-const path = require("path");
 const { execSync } = require("child_process");
 
 const platform = process.env.PLATFORM || "azure";
-console.log(`🔧 Running TypeScript build for platform: ${platform}`);
+console.log(`🔧 Running platform-specific build using npm scripts: ${platform}`);
 
-const tsconfig = platform === "aws" ? "tsconfig.aws.json" : "tsconfig.azure.json";
+if (platform === "aws") {
+  console.log("⏭️ Skipping Azure build script for AWS (handled by build.sh)");
+  process.exit(0);
+}
 
-// This points to the JS file that drives the TypeScript CLI
-const tscMain = path.resolve("node_modules", "typescript", "lib", "tsc.js");
-
+// For Azure: run the regular build-ts script
 try {
-  console.log(`🛠️ Compiling using node ${tscMain} --project ${tsconfig}`);
-  execSync(`node "${tscMain}" --project ${tsconfig}`, { stdio: "inherit" });
-  console.log("✅ TypeScript build completed");
-} catch (e) {
-  console.error("❌ TypeScript build failed:", e);
+  console.log("🛠️ Running: npm run build-ts");
+  execSync("npm run build-ts", { stdio: "inherit" });
+} catch (err) {
+  console.error("❌ TypeScript build failed:", err.message);
   process.exit(1);
 }
 //execSync(`npx tsc --project ${tsconfig}`, { stdio: "inherit" });

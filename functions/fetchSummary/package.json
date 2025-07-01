@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "preinstall": "node ./preinstall.js",
-    "build": "tsc",
-    "predeploy": "npm run build",
+    "prepare": "npm run build-ts",
+    "build": "node ./build.config.js",
+    "build-ts": "node ./node_modules/typescript/lib/tsc.js --project tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
