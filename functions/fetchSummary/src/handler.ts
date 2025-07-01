@@ -1,7 +1,7 @@
-import { DynamoDBProvider } from "./aws/DynamoDBProvider";
-import { CosmosDBProvider } from "./azure/CosmosDBProvider";
+//import { DynamoDBProvider } from "./aws/DynamoDBProvider";
+//import { CosmosDBProvider } from "./azure/CosmosDBProvider";
 import { IDatabaseProvider } from "./interfaces/IDatabaseProvider";
-import { KeyVaultProvider } from "./azure/KeyVaultProvider";
+//import { KeyVaultProvider } from "./azure/KeyVaultProvider";
 import { SummaryService } from "./services/SummaryService";
 
 /**
@@ -28,12 +28,15 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
 
   try {    
     let requestBody: any = null;
-    let dbProvider: IDatabaseProvider = new DynamoDBProvider();
+    let dbProvider: IDatabaseProvider | undefined; // = new DynamoDBProvider();
     // Handling request based on platform
     if (platform === 'azure') {
-      let secProvider = new KeyVaultProvider();
+      const { KeyVaultProvider } = require('./azure/KeyVaultProvider');
+      const { CosmosDBProvider } = require('./azure/CosmosDBProvider');
+      const secProvider = new KeyVaultProvider();
       const connectionString = await secProvider.getSecret('dbconnstring');
       dbProvider = new CosmosDBProvider(connectionString);
+
       try {
           requestBody = await event.json();
       } catch (error: any) {
@@ -43,7 +46,9 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
           requestBody = await event.text(); // Or leave as null
       }
     } else if (platform === 'aws') {
+      const { DynamoDBProvider } = require('./aws/DynamoDBProvider');
       dbProvider = new DynamoDBProvider();
+      
       if (!event.body) {
         throw new Error('Request body is missing.');
       }
@@ -51,7 +56,7 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
     } else {
       console.log("Platform not supported");
     }
-    const summaryService = new SummaryService(dbProvider);
+    const summaryService = new SummaryService(dbProvider as IDatabaseProvider);
     const sentAnalysis = await summaryService.process();
     console.log('Processed');
     responseBody = {

@@ -1,8 +1,8 @@
-import { DynamoDBProvider } from "./aws/DynamoDBProvider";
-import { SQSProvider } from "./aws/SQSProvider";
-import { CosmosDBProvider } from "./azure/CosmosDBProvider";
-import { KeyVaultProvider } from "./azure/KeyVaultProvider";
-import { StorageQueueProvider } from "./azure/StorageQueueProvider";
+//import { DynamoDBProvider } from "./aws/DynamoDBProvider";
+//import { SQSProvider } from "./aws/SQSProvider";
+//import { CosmosDBProvider } from "./azure/CosmosDBProvider";
+//import { KeyVaultProvider } from "./azure/KeyVaultProvider";
+//import { StorageQueueProvider } from "./azure/StorageQueueProvider";
 import { IDatabaseProvider } from "./interfaces/IDatabaseProvider";
 import { IQueueProvider } from "./interfaces/IQueueProvider";
 import { ReviewService } from "./services/ReviewService";
@@ -27,11 +27,14 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
 
   try {    
     let requestBody: any = null;
-    let dbProvider: IDatabaseProvider = new DynamoDBProvider();
-    let qProvider: IQueueProvider = new StorageQueueProvider();
+    let dbProvider: IDatabaseProvider | undefined; //= new DynamoDBProvider();
+    let qProvider: IQueueProvider | undefined; //= new StorageQueueProvider();
     // Handling request based on platform
     if (platform === 'azure') {  
-      let secProvider = new KeyVaultProvider();
+      const { CosmosDBProvider } = require('./azure/CosmosDBProvider');
+      const { StorageQueueProvider } = require('./azure/StorageQueueProvider');
+      const { KeyVaultProvider } = require('./azure/KeyVaultProvider');
+      const secProvider = new KeyVaultProvider();
       //const connectionString = await secProvider.getSecret('dbconnstring');
       dbProvider = new CosmosDBProvider(config.cosmosdb.endpoint);
       qProvider = new StorageQueueProvider();
@@ -44,6 +47,8 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
           requestBody = await event.text(); // Or leave as null
       }
     } else if (platform === 'aws') {
+      const { DynamoDBProvider } = require('./aws/DynamoDBProvider');
+      const { SQSProvider } = require('./aws/SQSProvider');
       dbProvider = new DynamoDBProvider();
       qProvider = new SQSProvider();
       if (!event.body) {
@@ -56,7 +61,7 @@ export const handler = async ( event: any, context: any ): Promise<any> => {
     console.log("APP ID found: ", requestBody.appId);
     if (!requestBody.appId) throw new Error("App Id not in the request");
     
-    const reviewService = new ReviewService(dbProvider, qProvider);
+    const reviewService = new ReviewService(dbProvider as IDatabaseProvider, qProvider as IQueueProvider);
     const sentAnalysis = await reviewService.process(requestBody.appId);
     console.log('Processed');
     responseBody = {

@@ -25,8 +25,12 @@ for func in "${FUNCTIONS[@]}"; do
   # Install only production dependencies
 
   npm install --silent
+  # Build using tsconfig.aws.json
+  echo "Building TypeScript with tsconfig.aws.json..."
+  npx tsc --project tsconfig.aws.json
   # Run build, allow failures to continue
-  npm run build
+  #npm run build
+
   npm prune --omit=dev
 
   #npm run build || echo "$func build failed — continuing..."

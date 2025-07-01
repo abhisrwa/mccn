@@ -19,13 +19,23 @@ for func in "${FUNCTIONS[@]}"; do
 
   # Navigate to function directory or fail with message
   cd "$FUNC_PATH" || { echo "❌ Directory $FUNC_PATH not found"; exit 1; }
-
+  
+  export PLATFORM=azure
+  echo "Pruning AWS dependencies (if any)..."
+  npm uninstall aws-sdk @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb || true
   # Install and build
   echo "Installing dependencies..."
   npm install --silent
-  echo "Building TypeScript..."
-  npm run build
+  # ensure necessary package are installed
+  npm install @azure/cosmos @azure/identity @azure/keyvault-secrets @azure/msal-node
 
+  echo "Compiling TypeScript using tsconfig.azure.json..."
+  npx tsc --project tsconfig.azure.json
+
+  echo "Building TypeScript..."
+    
+  npm prune --omit=dev
+  
   # Create zip file
   echo "Zipping $func into $ZIP_OUTPUT_PATH..."
   zip -r "$ZIP_OUTPUT_PATH" dist node_modules host.json package.json .funcignore src/ >/dev/null
@@ -40,5 +50,5 @@ for func in "${FUNCTIONS[@]}"; do
 done
 
 # Show contents
-echo "📦 Final zip files in terraform/azure:"
+echo "Final zip files in terraform/azure:"
 ls -lh *.zip

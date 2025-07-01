@@ -1,4 +1,4 @@
-// tsconfig.json
+// tsconfig.azure.json
 {
   "compilerOptions": {
     "target": "ES2020",         /* Specify ECMAScript target version */
@@ -10,13 +10,10 @@
     "esModuleInterop": true,     /* Enable compatibility for CommonJS and ES Modules */
     "skipLibCheck": true,        /* Skip type checking of declaration files */
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased file names */
-    "resolveJsonModule": true    /* Allow importing .json files */
+    "resolveJsonModule": true,   /* Allow importing .json files */
+    "moduleResolution": "node16"
   },
-  "include": [
-    "src/**/*.ts"                /* Include all .ts files in the src directory */
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"               /* Exclude test files */
-  ]
+ 
+  "include": ["src/azure", "src/common", "src/config","src/interfaces","src/services", "src/handler.ts"],
+  "exclude": ["src/aws","node_modules",  "**/*.spec.ts" ]
 }

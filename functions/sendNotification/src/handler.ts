@@ -1,5 +1,5 @@
-import { SecretsManagerProvider } from "./aws/SecretsManagerProvider";
-import { KeyVaultProvider } from "./azure/KeyVaultProvider";
+//import { SecretsManagerProvider } from "./aws/SecretsManagerProvider";
+//import { KeyVaultProvider } from "./azure/KeyVaultProvider";
 import { ISecretsProvider } from "./interfaces/ISecretsProvider";
 import { EmailService } from "./services/EmailService";
 
@@ -25,10 +25,12 @@ export const handler = async ( queueItem: any, context: any ): Promise<any> => {
     let sgapikey: string = '';
     // Handling request based on platform
     if (platform === 'azure') {
+      const { KeyVaultProvider } = require('./azure/KeyVaultProvider');
       secProvider = new KeyVaultProvider();
       sgapikey = await secProvider.getSecret('sgKey');
       console.log('Storage queue function processed work item:', sgapikey);
     } else if (platform === 'aws') {
+      const { SecretsManagerProvider } = require('./aws/SecretsManagerProvider');
       secProvider = new SecretsManagerProvider();
       const sgsecret = await secProvider.getSecret('poc/sentiment');
       console.log('Storage queue function processed work item:', sgsecret);
