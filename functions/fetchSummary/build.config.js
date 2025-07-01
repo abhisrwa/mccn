@@ -6,4 +6,9 @@ console.log(`🔧 Running TypeScript build for platform: ${platform}`);
 
 const tsconfig = platform === "aws" ? "tsconfig.aws.json" : "tsconfig.azure.json";
 
-execSync(`npx tsc --project ${tsconfig}`, { stdio: "inherit" });
+const path = require("path");
+const tscPath = path.resolve("node_modules", ".bin", "tsc");
+
+execSync(`${tscPath} --project ${tsconfig}`, { stdio: "inherit" });
+
+//execSync(`npx tsc --project ${tsconfig}`, { stdio: "inherit" });
