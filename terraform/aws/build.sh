@@ -41,9 +41,9 @@ for func in "${FUNCTIONS[@]}"; do
   echo "📁 Zipping dist/ to $ZIP_PATH..."
   zip -r $ZIP_PATH . -x "*.test.js"
   cd ..
-  ZIP_NEW_PATH=../../terraform/aws/$func.zip
+  ZIP_NEW_PATH=../../terraform/aws/$func.zip >/dev/null
   echo "📁 Zipping node_modules to $ZIP_PATH..."
-  zip -g "$ZIP_NEW_PATH" -r node_modules package.json package-lock.json
+  zip -g "$ZIP_NEW_PATH" -r node_modules package.json package-lock.json >/dev/null
   # Upload to S3
   echo "☁️ Uploading $func.zip to s3://$BUCKET_NAME/$func.zip..."
   aws s3 cp $ZIP_NEW_PATH s3://$BUCKET_NAME/$func.zip
