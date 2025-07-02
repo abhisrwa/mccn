@@ -1,44 +1,39 @@
 #!/bin/bash
 set -e
 
-# Run from terraform/azure directory
+# Ensure this script runs from terraform/azure
 echo "Running Azure source zip build from $(pwd)"
 
 # List of Azure Functions
-FUNCTIONS=("sentimentAnalyzer" "fetchSummary" "sendNotification")
+FUNCTIONS=("sentimentAnalyzer" "fetchSummary" "sendNotification" "fetchreview")
 
-# Define source and destination base paths
+# Define paths
 FUNCTIONS_BASE_DIR="../../functions"
-ZIP_OUTPUT_DIR="./"
+ZIP_OUTPUT_DIR="$(pwd)"  # Ensure output stays in terraform/azure
 
 # Cleanup old zip files
-echo "🧹 Removing old zip files..."
+echo "🧹 Removing old zip files in $ZIP_OUTPUT_DIR..."
 rm -f "$ZIP_OUTPUT_DIR"/*.zip
 
+# Loop through each function and build zip
 for func in "${FUNCTIONS[@]}"; do
   FUNC_SRC="$FUNCTIONS_BASE_DIR/$func"
   ZIP_NAME="$func.zip"
+  ZIP_PATH="$ZIP_OUTPUT_DIR/$ZIP_NAME"
 
   echo "📦 Zipping $func from $FUNC_SRC..."
-  
-  # Ensure function source exists
+
   if [ ! -d "$FUNC_SRC" ]; then
     echo "❌ Directory $FUNC_SRC not found. Skipping..."
     continue
   fi
 
-  # Change into the function directory and zip
-  (
-    cd "$FUNC_SRC"
-    zip -r "$ZIP_NAME" . -x "node_modules/*" "dist/*" "tsconfig.aws.json" > /dev/null
-  )
+  # Create zip from function root and write directly to terraform/azure
+  (cd "$FUNC_SRC" && zip -r "$ZIP_PATH" . -x "node_modules/*" "dist/*" "tsconfig.aws.json" > /dev/null)
 
-  # Move the zip to terraform/azure
-  mv "$FUNC_SRC/$ZIP_NAME" "$ZIP_OUTPUT_DIR"
-
-  echo "✅ Created $ZIP_OUTPUT_DIR/$ZIP_NAME"
+  echo "✅ Created $ZIP_PATH"
 done
 
-# Show final zip files
-echo "📂 Final zip files in $ZIP_OUTPUT_DIR:"
+# List the final outputs
+echo "📂 Final zip files:"
 ls -lh "$ZIP_OUTPUT_DIR"/*.zip

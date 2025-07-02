@@ -102,6 +102,17 @@ jobs:
      #     files: './terraform/azure/sentimentAnalyzer.zip'
      #     contentType: application/zip
       
+      - name: Verify all Azure function zips exist
+        run: |
+          FILES=(sentimentAnalyzer.zip fetchSummary.zip sendNotification.zip fetchreview.zip)
+          for file in "${FILES[@]}"; do
+            if [ ! -f "./terraform/azure/$file" ]; then
+              echo "❌ Missing: $file"
+              exit 1
+            fi
+            echo "✅ Found: $file"
+          done
+
       - name: Enable Kudu/Oryx Build
         uses: azure/CLI@v1
         with:
@@ -119,6 +130,15 @@ jobs:
             --resource-group multiccn-rg \
             --name multiccn-fetchSummary  \
             --src ./terraform/azure/fetchSummary.zip
+
+      - name: Deploy raw source via az CLI
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az functionapp deployment source config-zip \
+            --resource-group multiccn-rg \
+            --name multiccn-fetchreview  \
+            --src ./terraform/azure/fetchreview.zip
 
       #- name: Deploy sentimentAnalyzer function
       #  uses: Azure/functions-action@v1
