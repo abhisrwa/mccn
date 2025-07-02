@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "consumption_plan" {
 }
 
 resource "azurerm_service_plan" "lin_consumption_plan" {
-  name                = "${var.project_prefix}-plan"
+  name                = "${var.project_prefix}-linuxPlan"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Linux"
