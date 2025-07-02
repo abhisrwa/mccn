@@ -230,7 +230,7 @@ resource "azurerm_linux_function_app" "fetchReview" {
     ftps_state = "Disabled"
     
     application_stack {
-      node_version = "~22"
+      node_version = "22"
     }
   }
 
@@ -244,6 +244,7 @@ resource "azurerm_linux_function_app" "fetchReview" {
     #WEBSITE_NODE_DEFAULT_VERSION   = "20"
     #WEBSITE_RUN_FROM_PACKAGE       = "1"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    ENABLE_ORYX_BUILD = true
         
   }
 

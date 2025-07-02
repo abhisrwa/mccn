@@ -1,5 +1,5 @@
 interface AppConfig {
-    sgapikey: string;
+    //sgapikey: string;
     tomailid: string;
     frommailid: string;
     awsregion: string;
