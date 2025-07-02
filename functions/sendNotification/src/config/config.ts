@@ -27,7 +27,7 @@ const platform = process.env.PLATFORM || 'aws';
 
 const config: AppConfig = {
     platform,
-    sgapikey: requireEnv('SENDGRID_API_KEY'),
+    //sgapikey: requireEnv('SENDGRID_API_KEY'),
     tomailid: requireEnv('TO_EMAIL'),
     frommailid: requireEnv('FROM_EMAIL'),
     awsregion: process.env.REGION || 'eu-north-1',

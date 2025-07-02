@@ -6,6 +6,14 @@ resource "azurerm_service_plan" "consumption_plan" {
   sku_name            = "Y1"
 }
 
+resource "azurerm_service_plan" "lin_consumption_plan" {
+  name                = "${var.project_prefix}-plan"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  os_type             = "Linux"
+  sku_name            = "Y1"
+}
+
 resource "azurerm_storage_account" "func_storage" {
   name                     = "${var.project_prefix}funcstore"
   resource_group_name      = azurerm_resource_group.rg.name
@@ -207,5 +215,41 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
     "Get", # Allow the Function App to get the secret val
     "List" 
   ]
+}
+
+
+resource "azurerm_linux_function_app" "fetchReview" {
+  name                       = "${var.project_prefix}-fetchreview"
+  location                   = azurerm_resource_group.rg.location
+  resource_group_name        = azurerm_resource_group.rg.name
+  service_plan_id            = azurerm_service_plan.lin_consumption_plan.id
+  storage_account_name       = azurerm_storage_account.func_storage.name
+  storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
+
+  site_config {
+    ftps_state = "Disabled"
+    
+    application_stack {
+      node_version = "~22"
+    }
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  app_settings = {
+    FUNCTIONS_WORKER_RUNTIME       = "node"
+    FUNCTIONS_EXTENSION_VERSION     = "~4"
+    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
+    #WEBSITE_RUN_FROM_PACKAGE       = "1"
+    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+        
+  }
+
+  tags = {
+    Environment = "Development"
+  }
+  
 }
 # Duplicate and modify for fetchSummary and sendEmailNotification function
