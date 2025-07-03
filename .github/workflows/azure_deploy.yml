@@ -104,7 +104,7 @@ jobs:
       
       - name: Verify all Azure function zips exist
         run: |
-          FILES=(sentimentAnalyzer.zip fetchSummary.zip sendNotification.zip fetchreview.zip)
+          FILES=(sentimentAnalyzer.zip fetchSummary.zip sendNotification.zip)
           for file in "${FILES[@]}"; do
             if [ ! -f "./terraform/azure/$file" ]; then
               echo "❌ Missing: $file"
