@@ -22,15 +22,15 @@ var config = {
         summcontainerId: platform === 'azure' ? process.env.DB_SUMMCONTAINERID || 'reviewsummary' : ''
     },
     awsregion: platform === 'aws' ? process.env.REGION || 'eu-north-1' : '',
-    sqsURL: platform === 'aws' ? requireEnv('SQSURL') : '',
+    //sqsURL: platform === 'aws' ? requireEnv('SQSURL') : '',
     ddb: {
         reviewtable: platform === 'aws' ? process.env.DB_REVIEW_TABLE || 'customerreviews' : '',
         summarytable: platform === 'aws' ? process.env.DB_SUMM_TABLE || 'reviewsummary' : ''
     },
-    azqueue: {
-        queuename: platform === 'azure' ? requireEnv('AZQUEUE_NAME') : '',
-        queueurl: platform === 'azure' ? requireEnv('AZQUEUE_URL') : ''
-    },
+    //azqueue: {
+    //    queuename: platform === 'azure' ? requireEnv('AZQUEUE_NAME') : '',
+    //    queueurl: platform === 'azure' ? requireEnv('AZQUEUE_URL') : ''
+    //},
     vault: platform === 'azure' ? requireEnv('KEY_VAULT_URL') : '',
     clientID: platform === 'azure' ? requireEnv('CLIENT_ID') : ''
 };
