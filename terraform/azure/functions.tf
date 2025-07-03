@@ -6,13 +6,13 @@ resource "azurerm_service_plan" "consumption_plan" {
   sku_name            = "Y1"
 }
 
-resource "azurerm_service_plan" "lin_consumption_plan" {
-  name                = "${var.project_prefix}-linuxPlan"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  os_type             = "Linux"
-  sku_name            = "Y1"
-}
+#resource "azurerm_service_plan" "lin_consumption_plan" {
+#  name                = "${var.project_prefix}-linuxPlan"
+#  location            = azurerm_resource_group.rg.location
+#  resource_group_name = azurerm_resource_group.rg.name
+#  os_type             = "Linux"
+#  sku_name            = "Y1"
+#}
 
 resource "azurerm_storage_account" "func_storage" {
   name                     = "${var.project_prefix}funcstore"
@@ -109,7 +109,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     #COSMOSDB_CUSTREVIEW   = azurerm_cosmosdb_sql_container.cust_review.name
     DB_SUMMCONTAINERID    = azurerm_cosmosdb_sql_container.sent_analysis.name
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
-    AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
+    AZQUEUE_URL                    = "https://${azurerm_storage_account.queue.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
     CLIENT_ID                      = var.client_id
@@ -151,7 +151,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
     TO_EMAIL                       = var.to_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
-    AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
+    AZQUEUE_URL                    = "https://${azurerm_storage_account.queue.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
     CLIENT_ID                      = var.client_id
@@ -192,7 +192,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
 
-    AZQUEUE_URL     = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
+    AZQUEUE_URL     = "https://${azurerm_storage_account.queue.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
@@ -224,39 +224,39 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
 }
 
 
-resource "azurerm_linux_function_app" "fetchReview" {
-  name                       = "${var.project_prefix}-fetchreview"
-  location                   = azurerm_resource_group.rg.location
-  resource_group_name        = azurerm_resource_group.rg.name
-  service_plan_id            = azurerm_service_plan.lin_consumption_plan.id
-  storage_account_name       = azurerm_storage_account.func_storage.name
-  storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
+#resource "azurerm_linux_function_app" "fetchReview" {
+#  name                       = "${var.project_prefix}-fetchreview"
+#  location                   = azurerm_resource_group.rg.location
+#  resource_group_name        = azurerm_resource_group.rg.name
+#  service_plan_id            = azurerm_service_plan.lin_consumption_plan.id
+#  storage_account_name       = azurerm_storage_account.func_storage.name
+#  storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
 
-  site_config {
-    ftps_state = "Disabled"
+#  site_config {
+#    ftps_state = "Disabled"
     
-    application_stack {
-      node_version = "22"
-    }
-  }
+#    application_stack {
+#      node_version = "22"
+#    }
+#  }
 
-  identity {
-    type = "SystemAssigned"
-  }
+#  identity {
+#    type = "SystemAssigned"
+#  }
 
-  app_settings = {
-    FUNCTIONS_WORKER_RUNTIME       = "node"
-    FUNCTIONS_EXTENSION_VERSION     = "~4"
-    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
-    #WEBSITE_RUN_FROM_PACKAGE       = "1"
-    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
-    ENABLE_ORYX_BUILD = true
+#  app_settings = {
+#    FUNCTIONS_WORKER_RUNTIME       = "node"
+#    FUNCTIONS_EXTENSION_VERSION     = "~4"
+#    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
+#    #WEBSITE_RUN_FROM_PACKAGE       = "1"
+#    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+#    ENABLE_ORYX_BUILD = true
         
-  }
+#  }
 
-  tags = {
-    Environment = "Development"
-  }
+#  tags = {
+#    Environment = "Development"
+#  }
   
-}
+#}
 # Duplicate and modify for fetchSummary and sendEmailNotification function

@@ -35,6 +35,14 @@ resource "azurerm_storage_account" "static_site" {
   }
 }
 
+resource "azurerm_storage_account" "queue" {
+  name                     = "${var.project_prefix}queue"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
 resource "azurerm_storage_blob" "index_html" {
   name                   = "index.html"
   storage_account_name   = azurerm_storage_account.static_site.name
@@ -79,7 +87,7 @@ EOT
 
 resource "azurerm_storage_queue" "notification" {
   name                 = "js-queue-items"
-  storage_account_name = azurerm_storage_account.static_site.name
+  storage_account_name = azurerm_storage_account.queue.name
 }
 
 # Cosmos DB Account
@@ -158,7 +166,7 @@ resource "azurerm_role_assignment" "fetchsummary_cosmosdb_access" {
 }
 
 resource "azurerm_role_assignment" "queue_send_permission" {
-  scope                = azurerm_storage_account.static_site.id
+  scope                = azurerm_storage_account.queue.id
   role_definition_name = "Storage Queue Data Contributor"
   principal_id         = azurerm_windows_function_app.sentimentAnalyzer.identity[0].principal_id
 }
