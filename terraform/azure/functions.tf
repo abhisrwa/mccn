@@ -111,6 +111,8 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
+    KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
+    CLIENT_ID                      = var.client_id
         
   }
 
@@ -151,6 +153,8 @@ resource "azurerm_windows_function_app" "sendNotification" {
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = "https://${azurerm_storage_account.static_site.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
+    KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
+    CLIENT_ID                      = var.client_id
   }
 
   tags = {
@@ -199,6 +203,8 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     #AZQUEUE_URL                    = azurerm_storage_queue.notification.url
     PLATFORM                       = "azure"
     APPID                          = "123"
+    KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
+    CLIENT_ID                      = var.client_id
   }
 
   tags = {

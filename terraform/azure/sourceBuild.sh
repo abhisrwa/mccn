@@ -28,8 +28,19 @@ for func in "${FUNCTIONS[@]}"; do
     continue
   fi
 
+   # Rename tsconfig.azure.json → tsconfig.json
+  if [ -f "$FUNC_SRC/tsconfig.azure.json" ]; then
+    echo "🔄 Renaming tsconfig.azure.json to tsconfig.json"
+    mv "$FUNC_SRC/tsconfig.azure.json" "$FUNC_SRC/tsconfig.json"
+  fi
+
   # Create zip from function root and write directly to terraform/azure
   (cd "$FUNC_SRC" && zip -r "$ZIP_PATH" . -x "node_modules/*" "dist/*" "tsconfig.aws.json" > /dev/null)
+
+   # Restore the original filename
+  if [ -f "$FUNC_SRC/tsconfig.json" ]; then
+    mv "$FUNC_SRC/tsconfig.json" "$FUNC_SRC/tsconfig.azure.json"
+  fi
 
   echo "✅ Created $ZIP_PATH"
 done
