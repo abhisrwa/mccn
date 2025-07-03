@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "preinstall": "node ./preinstall.js",
+    "install": "npm ci",
     "build": "tsc --build --force",
-    "deploy": "npm run build && echo 'Deployment assets prepared'"
+    "deploy": "npm run build"
   },
 
   "dependencies": {
