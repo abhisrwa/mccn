@@ -27,12 +27,12 @@ export const handler = async ( queueItem: any, context: any ): Promise<any> => {
     if (platform === 'azure') {
       const { KeyVaultProvider } = require('./azure/KeyVaultProvider');
       secProvider = new KeyVaultProvider();
-      sgapikey = await secProvider.getSecret('sgKey');
+      sgapikey = await secProvider.getSecret('sendgridApikey');  //('sgKey');
       console.log('Storage queue function processed work item:', sgapikey);
     } else if (platform === 'aws') {
       const { SecretsManagerProvider } = require('./aws/SecretsManagerProvider');
       secProvider = new SecretsManagerProvider();
-      const sgsecret = await secProvider.getSecret('poc/sentiment');
+      const sgsecret = await secProvider.getSecret('sendgridApikey1');   //('poc/sentiment');
       console.log('Storage queue function processed work item:', sgsecret);
       const { sgKey } = JSON.parse(sgsecret);
       sgapikey = sgKey;
