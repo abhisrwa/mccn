@@ -4,12 +4,15 @@
   "description": "",
   "scripts": {
     "build": "tsc",
-    "predeploy": "npm run build"
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "predeploy": "npm run build",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start"    
   },
 
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.821.0",
-    "@azure/cosmos": "^4.4.1",
     "@azure/functions": "^4.0.0",
     "@azure/identity": "^4.10.1",
     "@azure/keyvault-secrets": "^4.10.0",
