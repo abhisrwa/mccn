@@ -79,7 +79,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-  source_code_hash           = filebase64sha256("./terraform/azure/fetchSummary.zip")
+  #source_code_hash           = filebase64sha256("./terraform/azure/fetchSummary.zip")
   site_config {
     ftps_state = "Disabled"
 
@@ -125,7 +125,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-  source_code_hash           = filebase64sha256("./terraform/azure/sendNotification.zip")
+  #source_code_hash           = filebase64sha256("./terraform/azure/sendNotification.zip")
   site_config {
     ftps_state = "Disabled"
    
@@ -166,7 +166,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-  source_code_hash           = filebase64sha256("./terraform/azure/sentimentAnalyzer.zip")
+  #source_code_hash           = filebase64sha256("./terraform/azure/sentimentAnalyzer.zip")
 
   site_config {
     ftps_state = "Disabled"
