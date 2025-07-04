@@ -79,7 +79,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-
+  source_code_hash           = filebase64sha256("./terraform/azure/fetchSummary.zip")
   site_config {
     ftps_state = "Disabled"
 
@@ -100,13 +100,10 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
-    #WEBSITE_RUN_FROM_PACKAGE       = "1"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
-    #COSMOSDB_CUSTREVIEW   = azurerm_cosmosdb_sql_container.cust_review.name
     DB_SUMMCONTAINERID    = azurerm_cosmosdb_sql_container.sent_analysis.name
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = "https://${azurerm_storage_account.queue.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
@@ -128,7 +125,7 @@ resource "azurerm_windows_function_app" "sendNotification" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-
+  source_code_hash           = filebase64sha256("./terraform/azure/sendNotification.zip")
   site_config {
     ftps_state = "Disabled"
    
@@ -144,8 +141,6 @@ resource "azurerm_windows_function_app" "sendNotification" {
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
     FUNCTIONS_EXTENSION_VERSION     = "~4"
-    #WEBSITE_NODE_DEFAULT_VERSION   = "22"
-    #WEBSITE_RUN_FROM_PACKAGE       = "1"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     FROM_EMAIL                     = var.from_email_address
     TO_EMAIL                       = var.to_email_address
@@ -171,6 +166,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
+  source_code_hash           = filebase64sha256("./terraform/azure/sentimentAnalyzer.zip")
 
   site_config {
     ftps_state = "Disabled"

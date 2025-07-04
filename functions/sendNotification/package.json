@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "build": "tsc --build --force",
-    "deploy": "npm run build"
+    "postinstall": "npm run build",
+    "deploy": "Deployment assets prepared"
   },
 
   "dependencies": {

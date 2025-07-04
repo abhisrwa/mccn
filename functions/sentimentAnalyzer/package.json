@@ -6,12 +6,9 @@
   "scripts": {
     "preinstall": "node ./preinstall.js",
     "build": "tsc --build --force",
+    "postinstall": "npm run build",
     "deploy": "npm run build && echo 'Deployment assets prepared'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "node16",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
     "@types/axios": "^0.9.36",
