@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc --build --force",
-    "postinstall": "npm run build",
-    "deploy": "Deployment assets prepared"
+    "build": "tsc",
+    "predeploy": "npm run build"
   },
 
   "dependencies": {
