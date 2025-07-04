@@ -27,6 +27,7 @@
     "@azure/storage-queue": "^12.26.0",
     "axios": "^1.9.0",
     "node-summarizer": "^1.0.7",
+    "typescript": "^5.8.3",
     "sentiment": "^5.0.2"
   }
 }

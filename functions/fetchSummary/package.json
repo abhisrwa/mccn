@@ -18,6 +18,7 @@
     "@azure/functions": "^4.0.0",
     "@azure/identity": "^4.10.1",
     "@azure/keyvault-secrets": "^4.10.0",
+    "typescript": "^5.8.3",
     "@azure/msal-node": "^3.6.1"
   },
   "devDependencies": {
