@@ -67,3 +67,9 @@ variable "review_table" {
 variable "summary_table" {
   default = "reviewSummary"
 }
+
+variable "openrouter_api_key" {
+  description = "Open router Info."
+  type        = string
+  sensitive   = true
+}

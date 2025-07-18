@@ -34,8 +34,8 @@ resource "aws_lambda_function" "sentimentAnalyzer" {
       APPID           = "389801252"
       SQSURL          = aws_sqs_queue.notification.url
       PLATFORM        = "aws"      
-      OPENROUTER_API_KEY = ""
-      GEMINI_KEY = ""
+      OPENROUTER_API_KEY = var.openrouter_api_key
+      #GEMINI_KEY = ""
     }
 }
   depends_on = [

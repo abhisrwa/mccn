@@ -54,3 +54,9 @@ variable "client_id" {
   type        = string
   description = "Azure client ID of the Federated Identity credential"
 }
+
+variable "openrouter_api_key" {
+  description = "Open router Info."
+  type        = string
+  sensitive   = true
+}

@@ -6,13 +6,6 @@ resource "azurerm_service_plan" "consumption_plan" {
   sku_name            = "Y1"
 }
 
-#resource "azurerm_service_plan" "lin_consumption_plan" {
-#  name                = "${var.project_prefix}-linuxPlan"
-#  location            = azurerm_resource_group.rg.location
-#  resource_group_name = azurerm_resource_group.rg.name
-#  os_type             = "Linux"
-#  sku_name            = "Y1"
-#}
 
 resource "azurerm_storage_account" "func_storage" {
   name                     = "${var.project_prefix}funcstore"
@@ -201,6 +194,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     APPID                          = "123"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
     CLIENT_ID                      = var.client_id
+    OPENROUTER_API_KEY             = var.openrouter_api_key
   }
 
   tags = {
