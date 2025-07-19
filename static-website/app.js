@@ -14,11 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     checkButton.addEventListener('click', function() {
-        if (!appSelect.value || !durationSelect.value) {
-            alert('Please select both App and Duration');
-            return;
-        }
-
         outputContainer.style.display = 'none';
         loading.style.display = 'block';
         checkButton.disabled = true;
