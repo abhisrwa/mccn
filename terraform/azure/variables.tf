@@ -37,7 +37,7 @@ variable "azure_sendgrid_secret_val" {
 variable "azure_key_vault_name" {
   description = "The name for the Azure Key Vault."
   type        = string
-  default     = "kvSGsecrets" # Must be globally unique
+  default     = "kvSGsecrets-mc" # Must be globally unique
 }
 
 variable "subscription_id" {

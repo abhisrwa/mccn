@@ -78,7 +78,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
 
     cors {
       allowed_origins = ["*"] # ["https://${azurerm_storage_account.static_web.name}.z13.web.core.windows.net"]
-      support_credentials = false
+      support_credentials = true #false
     }
 
     application_stack {
@@ -133,8 +133,9 @@ resource "azurerm_windows_function_app" "sendNotification" {
 
   app_settings = {  
     FUNCTIONS_WORKER_RUNTIME       = "node"
-    FUNCTIONS_EXTENSION_VERSION     = "~4"
+    FUNCTIONS_EXTENSION_VERSION    = "~4"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    AzureWebJobsStorage            = azurerm_storage_account.func_storage.primary_connection_string   
     FROM_EMAIL                     = var.from_email_address
     TO_EMAIL                       = var.to_email_address
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
@@ -211,42 +212,28 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
     "Get", # Allow the Function App to get the secret val
     "List" 
   ]
+
+  # Permissions for keys 
+  key_permissions = ["Get", "List"] # Example: "Get", "List", "Decrypt", "Sign"
+
+  # Permissions for certificates 
+  certificate_permissions = ["Get", "List"] # Example: "Get", "List"
 }
 
+# --- Azure Key Vault Secret Access Policy for the Function App's Managed Identity ---
+resource "azurerm_key_vault_access_policy" "func_summ_secret_get" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = var.tenant_id
+  object_id    = azurerm_windows_function_app.fetchSummary.identity[0].principal_id
 
-#resource "azurerm_linux_function_app" "fetchReview" {
-#  name                       = "${var.project_prefix}-fetchreview"
-#  location                   = azurerm_resource_group.rg.location
-#  resource_group_name        = azurerm_resource_group.rg.name
-#  service_plan_id            = azurerm_service_plan.lin_consumption_plan.id
-#  storage_account_name       = azurerm_storage_account.func_storage.name
-#  storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
+  secret_permissions = [
+    "Get", # Allow the Function App to get the secret val
+    "List" 
+  ]
 
-#  site_config {
-#    ftps_state = "Disabled"
-    
-#    application_stack {
-#      node_version = "22"
-#    }
-#  }
+  # Permissions for keys 
+  key_permissions = ["Get", "List"] # Example: "Get", "List", "Decrypt", "Sign"
 
-#  identity {
-#    type = "SystemAssigned"
-#  }
-
-#  app_settings = {
-#    FUNCTIONS_WORKER_RUNTIME       = "node"
-#    FUNCTIONS_EXTENSION_VERSION     = "~4"
-#    #WEBSITE_NODE_DEFAULT_VERSION   = "20"
-#    #WEBSITE_RUN_FROM_PACKAGE       = "1"
-#    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
-#    ENABLE_ORYX_BUILD = true
-        
-#  }
-
-#  tags = {
-#    Environment = "Development"
-#  }
-  
-#}
-# Duplicate and modify for fetchSummary and sendEmailNotification function
+  # Permissions for certificates 
+  certificate_permissions = ["Get", "List"] # Example: "Get", "List"
+}

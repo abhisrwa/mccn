@@ -35,13 +35,13 @@ resource "azurerm_storage_account" "static_site" {
   }
 }
 
-resource "azurerm_storage_account" "queue" {
+/*resource "azurerm_storage_account" "queue" {
   name                     = "${var.project_prefix}queue"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-}
+} */
 
 resource "azurerm_storage_blob" "index_html" {
   name                   = "index.html"
@@ -87,7 +87,8 @@ EOT
 
 resource "azurerm_storage_queue" "notification" {
   name                 = "js-queue-items"
-  storage_account_name = azurerm_storage_account.queue.name
+  storage_account_name       = azurerm_storage_account.func_storage.name
+  #storage_account_name = azurerm_storage_account.queue.name
 }
 
 # Cosmos DB Account
@@ -166,9 +167,15 @@ resource "azurerm_role_assignment" "fetchsummary_cosmosdb_access" {
 }
 
 resource "azurerm_role_assignment" "queue_send_permission" {
-  scope                = azurerm_storage_account.queue.id
+  scope                = azurerm_storage_account.func_storage.id
   role_definition_name = "Storage Queue Data Contributor"
   principal_id         = azurerm_windows_function_app.sentimentAnalyzer.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "queue_notify_permission" {
+  scope                = azurerm_storage_account.func_storage.id
+  role_definition_name = "Storage Queue Data Contributor"
+  principal_id         = azurerm_windows_function_app.sendNotification.identity[0].principal_id
 }
 
 resource "azurerm_api_management" "apim" {
@@ -224,7 +231,7 @@ resource "azurerm_api_management_api_operation_policy" "summary_post_cors" {
 <policies>
   <inbound>
     <base />
-    <cors allow-credentials="false">
+    <cors allow-credentials="true">
       <allowed-origins>
         <origin>*</origin>
       </allowed-origins>

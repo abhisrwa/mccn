@@ -82,6 +82,7 @@ resource "aws_s3_bucket_public_access_block" "static_wsite" {
 # Create SQS
 resource "aws_sqs_queue" "notification" {
   name = "js-queue-items"
+  fifo_queue = true
 }
 
 

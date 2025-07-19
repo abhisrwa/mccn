@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc --build --force",
-    "postinstall": "npm run build",
-    "deploy": "Deployment assets prepared"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
   },
-  
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.817.0",
     "@aws-sdk/client-secrets-manager": "^3.821.0",
@@ -16,8 +18,8 @@
     "@azure/functions": "^4.0.0",
     "@azure/identity": "^4.10.1",
     "@azure/keyvault-secrets": "^4.10.0",
-    "typescript": "^5.8.3",
-    "@azure/msal-node": "^3.6.1"
+    "@azure/msal-node": "^3.6.1",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/node": "^20.17.51",
