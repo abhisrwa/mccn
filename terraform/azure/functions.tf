@@ -78,7 +78,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
 
     cors {
       allowed_origins = ["*"] # ["https://${azurerm_storage_account.static_web.name}.z13.web.core.windows.net"]
-      support_credentials = true #false
+      support_credentials = false
     }
 
     application_stack {
