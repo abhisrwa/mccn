@@ -231,7 +231,7 @@ resource "azurerm_api_management_api_operation_policy" "summary_post_cors" {
 <policies>
   <inbound>
     <base />
-    <cors allow-credentials="true">
+    <cors allow-credentials="false">
       <allowed-origins>
         <origin>*</origin>
       </allowed-origins>
