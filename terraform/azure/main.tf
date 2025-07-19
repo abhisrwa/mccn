@@ -206,7 +206,7 @@ resource "azurerm_api_management_api_operation" "summary_post" {
   resource_group_name = azurerm_resource_group.rg.name
   display_name        = "Post Summary"
   method              = "POST"
-  url_template        = "/"
+  url_template        = "/${var.project_prefix}-fetchsummary"
   response {
     status_code = 200
     description = "OK"
