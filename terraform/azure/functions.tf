@@ -72,13 +72,13 @@ resource "azurerm_user_assigned_identity" "uami" {
 
 resource "azurerm_role_assignment" "uami_key_vault_access" {
   scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
-  role_definition_name = "Key Vault Secrets User"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
+  role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.uami.principal_id
 }
 
 resource "azurerm_role_assignment" "uami_key_vault_admin" {
   scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
-  role_definition_name = "Key Vault Administrator"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
+  role_definition_name = "Key Vault Administrator"    
   principal_id         = azurerm_user_assigned_identity.uami.principal_id
 }
 
