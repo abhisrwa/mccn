@@ -64,6 +64,23 @@ resource "azurerm_key_vault_secret" "sg_secret" {
   depends_on = [time_sleep.wait_for_kv_policy_propagation]
 }
 
+resource "azurerm_user_assigned_identity" "uami" {
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  name                = "mccn-uami" 
+}
+
+resource "azurerm_role_assignment" "uami_key_vault_access" {
+  scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
+  role_definition_name = "Key Vault Secrets User"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
+  principal_id         = azurerm_user_assigned_identity.uami.principal_id
+}
+
+resource "azurerm_role_assignment" "uami_key_vault_access" {
+  scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
+  role_definition_name = "Key Vault Administrator"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
+  principal_id         = azurerm_user_assigned_identity.uami.principal_id
+}
 
 resource "azurerm_windows_function_app" "fetchSummary" {
   name                       = "${var.project_prefix}-fetchsummary"
@@ -87,7 +104,9 @@ resource "azurerm_windows_function_app" "fetchSummary" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    # Reference the ID of the User-Assigned Managed Identity
+    identity_ids = [azurerm_user_assigned_identity.uami.id]
   }
 
   app_settings = {
@@ -101,10 +120,10 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     DB_SUMMCONTAINERID    = azurerm_cosmosdb_sql_container.sent_analysis.name
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = azurerm_storage_account.func_storage.primary_connection_string
-    # "https://${azurerm_storage_account.func_storage.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
+
     PLATFORM                       = "azure"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
-    CLIENT_ID                      = var.client_id
+    CLIENT_ID                      = azurerm_user_assigned_identity.uami.client_id #var.client_id
         
   }
 
@@ -130,7 +149,9 @@ resource "azurerm_windows_function_app" "sendNotification" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    # Reference the ID of the User-Assigned Managed Identity
+    identity_ids = [azurerm_user_assigned_identity.uami.id]
   }
 
   app_settings = {  
@@ -143,10 +164,9 @@ resource "azurerm_windows_function_app" "sendNotification" {
     SENDGRID_API_KEY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.kv.vault_uri}/secrets/${var.azure_sendgrid_secret_name}/)"
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     AZQUEUE_URL                    = azurerm_storage_account.func_storage.primary_connection_string
-    #"https://${azurerm_storage_account.func_storage.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     PLATFORM                       = "azure"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
-    CLIENT_ID                      = var.client_id
+    CLIENT_ID                      = azurerm_user_assigned_identity.uami.client_id
   }
 
   tags = {
@@ -163,7 +183,6 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   service_plan_id            = azurerm_service_plan.consumption_plan.id
   storage_account_name       = azurerm_storage_account.func_storage.name
   storage_account_access_key = azurerm_storage_account.func_storage.primary_access_key
-  #source_code_hash           = filebase64sha256("./terraform/azure/sentimentAnalyzer.zip")
 
   site_config {
     ftps_state = "Disabled"
@@ -174,7 +193,9 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
   }
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    # Reference the ID of the User-Assigned Managed Identity
+    identity_ids = [azurerm_user_assigned_identity.uami.id]
   }
 
   app_settings = {
@@ -186,7 +207,6 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     AzureWebJobsStorage   = azurerm_storage_account.func_storage.primary_connection_string    
 
     AZQUEUE_URL     = azurerm_storage_account.func_storage.primary_connection_string
-    #"https://${azurerm_storage_account.func_storage.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
     DB_ENDPOINT     = "AccountEndpoint=${azurerm_cosmosdb_account.cosmos.endpoint};AccountKey=${azurerm_cosmosdb_account.cosmos.primary_key};"
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
@@ -196,9 +216,9 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
     AZQUEUE_NAME                   = azurerm_storage_queue.notification.name
     #AZQUEUE_URL                    = azurerm_storage_queue.notification.url
     PLATFORM                       = "azure"
-    APPID                          = "123"
+    APPID                          = "389801252"
     KEY_VAULT_URL                  = azurerm_key_vault.kv.vault_uri
-    CLIENT_ID                      = var.client_id
+    CLIENT_ID                      = azurerm_user_assigned_identity.uami.client_id
     OPENROUTER_API_KEY             = var.openrouter_api_key
   }
 
