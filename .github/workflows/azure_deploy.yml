@@ -72,6 +72,11 @@ jobs:
           -backend-config="key=azure/terraform.tfstate"
         working-directory: ./terraform/azure # Run terraform commands from the terraform directory
 
+     # - name: Terraform Plan
+     #   run: terraform plan -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+     #   working-directory: ./terraform/azure
+        # Output plan to a file for review (optional)
+        # -out="plan.tfplan"
       - name: Terraform Plan
         run: terraform plan -refresh=true -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}" -var="azure_sendgrid_secret_val=${{ secrets.SGKEY }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"  -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
         working-directory: ./terraform/azure
@@ -79,7 +84,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="from_email_address=${{ secrets.FROM_EMAIL_ADDRESS }}"  -var="azure_sendgrid_secret_val=${{ secrets.SGKEY }}" -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"  -var="client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" #-var="az_resource_group=${{ secrets.AZURE_RESOURCE_GROUP }}"
         working-directory: ./terraform/azure
-      
+
       - name: Make build.sh executable
         run: chmod +x ./build.sh
         working-directory: ./terraform/azure
@@ -114,8 +119,8 @@ jobs:
         with:
           inlineScript: |
             az functionapp config appsettings set \
-              --name cloudag-fetchSummary \
-              --resource-group cloudag-rg \
+              --name multiccn-fetchSummary \
+              --resource-group multiccn-rg \
               --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true NODE_ENV=development
 
       - name: Deploy sendNotification function
@@ -123,8 +128,8 @@ jobs:
         with:
           inlineScript: |
             az functionapp deployment source config-zip \
-            --resource-group cloudag-rg \
-            --name cloudag-sendNotification  \
+            --resource-group multiccn-rg \
+            --name multiccn-sendNotification  \
             --src ./terraform/azure/sendNotification.zip
 
       - name: Deploy fetchSummary function
@@ -132,8 +137,8 @@ jobs:
         with:
           inlineScript: |
             az functionapp deployment source config-zip \
-            --resource-group cloudag-rg \
-            --name cloudag-fetchSummary  \
+            --resource-group multiccn-rg \
+            --name multiccn-fetchSummary  \
             --src ./terraform/azure/fetchSummary.zip
 
       - name: Deploy sentimentAnalyzer function
@@ -141,6 +146,48 @@ jobs:
         with:
           inlineScript: |
             az functionapp deployment source config-zip \
-            --resource-group cloudag-rg \
-            --name cloudag-sentimentAnalyzer  \
+            --resource-group multiccn-rg \
+            --name multiccn-sentimentAnalyzer  \
             --src ./terraform/azure/sentimentAnalyzer.zip
+
+    #  - name: Deploy reviewsummary function
+    #    uses: azure/CLI@v1
+    #    with:
+    #      inlineScript: |
+    #        az functionapp deployment source config-zip \
+    #        --resource-group multiccn-rg \
+    #        --name multiccn-fetchreview  \
+    #        --src ./terraform/azure/fetchreview.zip
+
+      #- name: Deploy sentimentAnalyzer function
+      #  uses: Azure/functions-action@v1
+      #  with:
+      #    app-name: multiccn-sentimentAnalyzer
+      #    package: ./terraform/azure/sentimentAnalyzer.zip
+      #    publish-profile: ${{ secrets.AZURE_SENTIMENTANALYZER_PUBLISH_PROFILE }} 
+
+      #- name: Deploy fetchSummary function
+      #  uses: Azure/functions-action@v1
+      #  with:
+      #    app-name: multiccn-fetchSummary
+      #    package: ./terraform/azure/fetchSummary.zip
+      #    publish-profile: ${{ secrets.AZURE_FETCHSUMMARY_PUBLISH_PROFILE }}
+
+      #- name: Deploy sendNotification function
+      #  uses: Azure/functions-action@v1
+      #  with:
+      #    app-name: multiccn-sendNotification
+      #    package: ./terraform/azure/sendNotification.zip
+       #   publish-profile: ${{ secrets.AZURE_SENDNOTIFICATION_PUBLISH_PROFILE }}   
+          
+          #- name: Install Azure CLI
+          #  uses: azure/setup-az-cli@v1
+
+      #- name: Deploy fetchSummary function
+      #  run: az functionapp deployment source config-zip --resource-group multiccn-rg --name multiccn-fetchsummary --src ./terraform/azure/fetchSummary.zip
+
+      #- name: Deploy sendNotification function
+      #  run: az functionapp deployment source config-zip --resource-group multiccn-rg --name multiccn-sendNotification --src ./terraform/azure/sendNotification.zip
+
+      #- name: Deploy sentimentAnalyzer function
+      #  run: az functionapp deployment source config-zip --resource-group multiccn-rg --name multiccn-sentimentAnalyzer --src ./terraform/azure/sentimentAnalyzer.zip
