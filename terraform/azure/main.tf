@@ -33,6 +33,15 @@ resource "azurerm_storage_account" "static_site" {
     index_document = "index.html"
     error_404_document = "error.html"
   }
+  blob_properties {
+    cors_rule {
+      allowed_headers    = ["*"] # Allow all headers
+      allowed_methods    = ["GET", "POST"] # Methods
+      allowed_origins    = ["*"] # Allow all origins, or specify your domain: ["https://yourdomain.com", "http://localhost:3000"]
+      exposed_headers    = ["*"] # Expose all headers
+      max_age_in_seconds = 30   # Cache preflight requests for 5 minutes
+    }
+  }
 }
 
 /*resource "azurerm_storage_account" "queue" {
@@ -80,7 +89,7 @@ resource "azurerm_storage_blob" "config_js" {
   content_type           = "application/javascript"
   source_content = <<EOT
 window._env_ = {
-  API_ENDPOINT_URL: "https://${azurerm_api_management.apim.name}.azure-api.net/summary"
+  API_ENDPOINT_URL: "https://multiccn-fetchsummary.azurewebsites.net/api/tssummary"
 };
 EOT
 }
@@ -187,6 +196,16 @@ resource "azurerm_api_management" "apim" {
   sku_name            = "Consumption_0"
 }
 
+# Define the API Management Backend resource
+resource "azurerm_api_management_backend" "app_service_backend" {
+  name                = "fetchSummaryBackend"
+  resource_group_name = azurerm_resource_group.rg.name
+  api_management_name = azurerm_api_management.apim.name
+  protocol            = "http" # Or "https" depending on your backend
+  url                 = "https://${azurerm_windows_function_app.fetchSummary.default_hostname}/api/tssummary" # Use the host name of the App Service
+  description         = "Backend for fetch summary Service"
+}
+
 resource "azurerm_api_management_api" "summary_api" {
   name                = "summary-api"
   resource_group_name = azurerm_resource_group.rg.name
@@ -226,14 +245,15 @@ resource "azurerm_api_management_api_operation_policy" "summary_post_cors" {
   api_management_name = azurerm_api_management.apim.name
   resource_group_name = azurerm_resource_group.rg.name
   operation_id        = "post-summary" # Must match operation ID (defined or imported)
-
+  # azurerm_storage_account.static_site.primary_web_host
+  #<set-backend-service base-url="https://${azurerm_windows_function_app.fetchSummary.default_hostname}/api/tssummary" />
   xml_content = <<XML
 <policies>
   <inbound>
     <base />
-    <cors allow-credentials="false">
+    <cors allow-credentials="true">
       <allowed-origins>
-        <origin>*</origin>
+        <origin>"https://multiccnstorage.z9.web.core.windows.net/"</origin>
       </allowed-origins>
       <allowed-methods>
         <method>POST</method>
@@ -243,7 +263,7 @@ resource "azurerm_api_management_api_operation_policy" "summary_post_cors" {
         <header>*</header>
       </allowed-headers>
     </cors>
-    <set-backend-service base-url="https://${azurerm_windows_function_app.fetchSummary.default_hostname}/api/fetchSummary" />
+    <set-backend-service backend-id="${azurerm_api_management_backend.app_service_backend.name}" />
   </inbound>
   <backend>
     <base />
