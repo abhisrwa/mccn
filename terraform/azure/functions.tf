@@ -24,6 +24,7 @@ resource "azurerm_key_vault" "kv" {
   resource_group_name = azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
   sku_name            = "standard"
+  enable_rbac_authorization = true
 
   # Required for Azure Functions to reference secrets
   soft_delete_retention_days = 7

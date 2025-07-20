@@ -244,9 +244,7 @@ resource "azurerm_api_management_api_operation_policy" "summary_post_cors" {
   api_name            = azurerm_api_management_api.summary_api.name
   api_management_name = azurerm_api_management.apim.name
   resource_group_name = azurerm_resource_group.rg.name
-  operation_id        = "post-summary" # Must match operation ID (defined or imported)
-  # azurerm_storage_account.static_site.primary_web_host
-  #<set-backend-service base-url="https://${azurerm_windows_function_app.fetchSummary.default_hostname}/api/tssummary" />
+  operation_id        = "post-summary"  # azurerm_storage_account.static_site.primary_web_host #<set-backend-service base-url="https://${azurerm_windows_function_app.fetchSummary.default_hostname}/api/tssummary" />
   xml_content = <<XML
 <policies>
   <inbound>
