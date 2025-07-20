@@ -231,7 +231,8 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
 resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id    = var.tenant_id
-  object_id    = azurerm_windows_function_app.sendNotification.identity[0].principal_id
+  object_id    = azurerm_user_assigned_identity.uami.principal_id
+ # object_id    = azurerm_windows_function_app.sendNotification.identity[0].principal_id
 
   secret_permissions = [
     "Get", # Allow the Function App to get the secret val
@@ -249,7 +250,8 @@ resource "azurerm_key_vault_access_policy" "func_app_secret_get" {
 resource "azurerm_key_vault_access_policy" "func_summ_secret_get" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id    = var.tenant_id
-  object_id    = azurerm_windows_function_app.fetchSummary.identity[0].principal_id
+  object_id    = azurerm_user_assigned_identity.uami.principal_id
+  #object_id    = azurerm_windows_function_app.fetchSummary.identity[0].principal_id
 
   secret_permissions = [
     "Get", # Allow the Function App to get the secret val
