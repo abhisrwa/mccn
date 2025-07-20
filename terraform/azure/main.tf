@@ -23,24 +23,6 @@ resource "azurerm_resource_group" "rg" {
   location = var.azure_location
 }
 
-resource "azurerm_user_assigned_identity" "uami" {
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  name                = "mccn-uami" 
-}
-
-resource "azurerm_role_assignment" "uami_key_vault_access" {
-  scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
-  role_definition_name = "Key Vault Secrets User"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
-  principal_id         = azurerm_user_assigned_identity.uami.principal_id
-}
-
-resource "azurerm_role_assignment" "uami_key_vault_access" {
-  scope                = azurerm_key_vault.kv.id # Scope is the Key Vault resource ID
-  role_definition_name = "Key Vault Administrator"        # Or "Key Vault Reader", "Key Vault Administrator" etc.
-  principal_id         = azurerm_user_assigned_identity.uami.principal_id
-}
-
 resource "azurerm_storage_account" "static_site" {
   name                     = "${var.project_prefix}storage"
   resource_group_name      = azurerm_resource_group.rg.name
@@ -235,7 +217,7 @@ resource "azurerm_api_management_api" "summary_api" {
 
 }
 
-# Define the operation
+# Define the api operation
 resource "azurerm_api_management_api_operation" "summary_post" {
   operation_id        = "post-summary"
   api_name            = azurerm_api_management_api.summary_api.name
