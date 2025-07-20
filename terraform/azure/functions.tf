@@ -95,7 +95,7 @@ resource "azurerm_windows_function_app" "fetchSummary" {
     FUNCTIONS_EXTENSION_VERSION     = "~4"
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
    # DB_ENDPOINT     = azurerm_cosmosdb_account.cosmos.endpoint
-    DB_ENDPOINT     = "AccountEndpoint=${azurerm_cosmosdb_account.cosmos.endpoint};AccountKey=${azurerm_cosmosdb_account.cosmos.primary_master_key};"
+    DB_ENDPOINT     = "AccountEndpoint=${azurerm_cosmosdb_account.cosmos.endpoint};AccountKey=${azurerm_cosmosdb_account.cosmos.primary_key};"
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
     DB_SUMMCONTAINERID    = azurerm_cosmosdb_sql_container.sent_analysis.name
@@ -187,7 +187,7 @@ resource "azurerm_windows_function_app" "sentimentAnalyzer" {
 
     AZQUEUE_URL     = azurerm_storage_account.func_storage.primary_connection_string
     #"https://${azurerm_storage_account.func_storage.name}.queue.core.windows.net/${azurerm_storage_queue.notification.name}"
-    DB_ENDPOINT     = "AccountEndpoint=${azurerm_cosmosdb_account.cosmos.endpoint};AccountKey=${azurerm_cosmosdb_account.cosmos.primary_master_key};"
+    DB_ENDPOINT     = "AccountEndpoint=${azurerm_cosmosdb_account.cosmos.endpoint};AccountKey=${azurerm_cosmosdb_account.cosmos.primary_key};"
     DB_ID           = azurerm_cosmosdb_sql_database.database.name
     DB_KEY          = azurerm_cosmosdb_account.cosmos.primary_key
     DB_CONTAINERID        = azurerm_cosmosdb_sql_container.cust_review.name
